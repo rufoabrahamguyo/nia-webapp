@@ -13,6 +13,7 @@
   --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
   --font-serif: "Source Serif 4", Georgia, serif;
   --page: 1120px;
+  --header-h: 140px;
 }
 
 *,
@@ -97,11 +98,16 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 28px;
+  width: 100%;
   min-height: 76px;
-  padding: 10px 0;
+  margin-inline: 0;
+  padding: 10px 20px 10px 0;
+  box-sizing: border-box;
 }
 
 .brand {
+  justify-self: start;
+  margin: 0;
   border: 0;
   background: transparent;
   color: var(--ink);
@@ -111,6 +117,7 @@ a:focus-visible {
   letter-spacing: -0.03em;
   min-height: 44px;
   padding: 0;
+  text-align: left;
   cursor: pointer;
 }
 
@@ -157,15 +164,16 @@ a:focus-visible {
 }
 
 .help-bar-inner {
-  width: min(var(--page), calc(100% - 40px));
-  margin-inline: auto;
+  width: 100%;
+  margin-inline: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px 20px;
   min-height: 52px;
-  padding: 8px 0;
+  padding: 8px 20px 8px 0;
+  box-sizing: border-box;
 }
 
 .help-bar-call {
@@ -173,6 +181,7 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 8px 14px;
+  margin: 0;
 }
 
 .help-bar-call span,
@@ -310,7 +319,16 @@ a:focus-visible {
   grid-template-columns: 1fr;
   gap: 36px;
   align-items: center;
-  padding: 48px 0 12px;
+  padding: 0;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100dvh - var(--header-h));
+  padding: 48px 0 32px;
 }
 
 .eyebrow {
@@ -327,10 +345,12 @@ a:focus-visible {
 
 .hero-home .lede {
   max-width: 34rem;
+  margin-bottom: auto;
+  padding-bottom: 28px;
 }
 
 .hero-home .button {
-  margin-top: 28px;
+  margin-top: 0;
 }
 
 .channel {
@@ -995,7 +1015,9 @@ h1 {
 @media (min-width: 900px) {
   .hero-home {
     grid-template-columns: 1.05fr 0.95fr;
-    min-height: 520px;
+  }
+
+  .hero-copy {
     padding-top: 64px;
   }
 

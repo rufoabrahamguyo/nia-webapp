@@ -13,7 +13,7 @@ const copy = {
     eyebrow: "Free, confidential support",
     heroTitle: "You decide what happens next.",
     heroLine:
-      "Nia is for adults in Kenya who have faced sexual harassment. Learn what it can look like, see your options, and reach a verified line — in your own time.",
+      "Nia is for people in Kenya who have faced sexual harassment. Here, you'll learn what it can look like, see your options, and reach a verified line in your own time.",
     ctaReach: "Get help now",
     channelNumber: "1195",
     channelCaption: "GBV helpline",

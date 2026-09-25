@@ -1,8 +1,25 @@
+import { useEffect, useRef } from "react";
 import { leaveSite } from "../scroll.js";
 
 export default function Header({ language, text, view, onLanguage, onNavigate, onHelp }) {
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    const node = headerRef.current;
+    if (!node) return;
+
+    const apply = () => {
+      document.documentElement.style.setProperty("--header-h", `${node.offsetHeight}px`);
+    };
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef}>
       <a className="skip-link" href="#content">
         {text.skip}
       </a>
