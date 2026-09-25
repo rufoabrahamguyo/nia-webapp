@@ -103,7 +103,7 @@ const copy = {
     footer: "Kenya · Adults 18+",
     footerTagline: "Your Voice. Your Rights. Your Support.",
     footerAbout:
-      "Free, confidential support for adults in Kenya who have faced sexual harassment.",
+      "Free, confidential support for people in Kenya who have faced sexual harassment.",
     footerExplore: "On this site",
     footerHelp: "Talk to someone now",
     footerHome: "Home",
