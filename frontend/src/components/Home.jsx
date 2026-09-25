@@ -14,7 +14,7 @@ export default function Home({ text, onOpen }) {
           <svg className="channel-lines" viewBox="0 0 520 460">
             <path d="M118 108 C190 120, 210 180, 250 214" />
             <path d="M400 118 C340 150, 310 180, 276 214" />
-            <path d="M168 352 C190 300, 220 260, 248 236" />
+            <path d="M95 352 C150 310, 200 270, 248 236" />
           </svg>
           <div className="channel-center">
             <strong>{text.channelNumber}</strong>
