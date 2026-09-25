@@ -30,30 +30,36 @@ export default function Helplines({ language, text }) {
   const organisations = linesFor(language, "org");
 
   return (
-    <section className="helplines" aria-labelledby="helplines-title">
-      <p className="screen-index">05</p>
-      <h1 id="helplines-title">{text.helplinesTitle}</h1>
-      <p className="lede">{text.helplinesLine}</p>
+    <article className="page page-helplines">
+      <header className="page-hero">
+        <div className="page-hero-copy">
+          <p className="screen-index">05</p>
+          <h1 id="helplines-title">{text.helplinesTitle}</h1>
+          <p className="lede">{text.helplinesLine}</p>
+        </div>
+      </header>
 
-      <h2 className="group-label">{text.callNow}</h2>
-      <div className="line-list">
-        {now.map((line) => (
-          <LineCard key={line.name} line={line} />
-        ))}
+      <div className="page-band">
+        <h2 className="group-label">{text.callNow}</h2>
+        <div className="line-list">
+          {now.map((line) => (
+            <LineCard key={line.name} line={line} />
+          ))}
+        </div>
+
+        <h2 className="group-label">{text.organisations}</h2>
+        <div className="line-list">
+          {organisations.map((line) => (
+            <LineCard key={line.name} line={line} />
+          ))}
+        </div>
+
+        <p className="fine helpline-source">
+          <a href="https://help.unhcr.org/kenya/" target="_blank" rel="noreferrer">
+            {text.unhcrNote}
+          </a>
+        </p>
       </div>
-
-      <h2 className="group-label">{text.organisations}</h2>
-      <div className="line-list">
-        {organisations.map((line) => (
-          <LineCard key={line.name} line={line} />
-        ))}
-      </div>
-
-      <p className="fine helpline-source">
-        <a href="https://help.unhcr.org/kenya/" target="_blank" rel="noreferrer">
-          {text.unhcrNote}
-        </a>
-      </p>
-    </section>
+    </article>
   );
 }

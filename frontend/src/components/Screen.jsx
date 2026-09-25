@@ -1,5 +1,4 @@
 import HelpGuide from "./HelpGuide.jsx";
-import { TileArt } from "./Visuals.jsx";
 
 function NextLink({ screen, onOpen }) {
   return (
@@ -10,35 +9,57 @@ function NextLink({ screen, onOpen }) {
   );
 }
 
+function layoutFor(id) {
+  if (id === "rights") return "options";
+  if (id === "document") return "record";
+  return "topics";
+}
+
 export default function Screen({ id, screen, onOpen }) {
-  const hasMore = Boolean(screen.guide || screen.sections);
+  const hasSections = Boolean(screen.sections);
+  const hasGuide = Boolean(screen.guide);
 
   return (
-    <>
-      <section className="screen" aria-labelledby="screen-title">
-        <div className="screen-copy">
+    <article className={`page page-${id}`}>
+      <header className="page-hero">
+        <div className="page-hero-copy">
           <p className="screen-index">{screen.index}</p>
           <h1 id="screen-title">{screen.title}</h1>
           <p className="lede">{screen.body}</p>
-          {hasMore ? null : <NextLink screen={screen} onOpen={onOpen} />}
         </div>
-        <div className={`screen-art screen-art-${id}`}>
-          <TileArt id={id} />
-        </div>
-      </section>
-      {screen.sections ? (
-        <HelpGuide
-          guide={{
-            title: screen.sectionsTitle,
-            lede: screen.sectionsLede,
-            sections: screen.sections,
-          }}
-          onOpen={onOpen}
-          headingId="section-title"
-        />
+      </header>
+
+      {hasSections ? (
+        <section className="page-band" aria-labelledby="section-title">
+          <div className="page-band-intro">
+            <h2 id="section-title">{screen.sectionsTitle}</h2>
+            <p>{screen.sectionsLede}</p>
+          </div>
+          <HelpGuide sections={screen.sections} layout={layoutFor(id)} onOpen={onOpen} />
+          {hasGuide ? null : <NextLink screen={screen} onOpen={onOpen} />}
+        </section>
       ) : null}
-      {screen.guide ? <HelpGuide guide={screen.guide} onOpen={onOpen} headingId="guide-title" /> : null}
-      {hasMore ? <NextLink screen={screen} onOpen={onOpen} /> : null}
-    </>
+
+      {hasGuide ? (
+        <>
+          <section className="page-hero page-hero-guide" aria-labelledby="guide-title">
+            <div className="page-hero-copy">
+              <h2 id="guide-title">{screen.guide.title}</h2>
+              <p className="lede">{screen.guide.lede}</p>
+            </div>
+          </section>
+          <section className="page-band">
+            <HelpGuide sections={screen.guide.sections} layout="guide" onOpen={onOpen} />
+            <NextLink screen={screen} onOpen={onOpen} />
+          </section>
+        </>
+      ) : null}
+
+      {!hasSections && !hasGuide ? (
+        <section className="page-band">
+          <NextLink screen={screen} onOpen={onOpen} />
+        </section>
+      ) : null}
+    </article>
   );
 }

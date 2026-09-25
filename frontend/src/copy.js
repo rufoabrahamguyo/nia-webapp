@@ -46,25 +46,45 @@ const copy = {
       },
     ],
     howTitle: "How Nia helps",
-    howLine: "No matter what you have been through, you can start here. The next step stays yours.",
+    howLine: "You decide what happens next, at your own pace.",
     how: [
       {
-        id: "helplines",
-        title: "Support",
-        line: "Verified helplines in Kenya, each one labeled so you know who answers.",
-        image: "/images/support.png",
+        title: "Understand what happened",
+        line: "Recognise harassment and abuse of power. It is never your fault.",
       },
       {
-        id: "learn",
-        title: "Learn",
-        line: "What concerning behaviour can look like, and how to support someone who tells you.",
-        image: "/images/learn.png",
+        title: "Know your rights",
+        line: "Kenyan law in plain language, checked against official sources.",
       },
       {
-        id: "rights",
-        title: "Your options",
-        line: "Information you can use when you are ready. You choose whether to report.",
-        image: "/images/rights.png",
+        title: "Keep a private record",
+        line: "Write down what happened. Only you can see it unless you share it.",
+      },
+      {
+        title: "Find out if you're not alone",
+        line: "Privately name who harmed you. If someone else names them too, we'll let you know.",
+      },
+      {
+        title: "Reach verified support",
+        line: "Checked counsellors, legal aid, medical services and helplines.",
+      },
+      {
+        title: "Support when you're told to stay quiet",
+        line: "Understand your options if others pressure you to keep silent.",
+      },
+    ],
+    howCloseTitle: "You're in control",
+    howCloseLine: "Nothing is shared without your permission",
+    reminderTitle: "A reminder",
+    reminderDots: "Reminders",
+    reminders: [
+      {
+        title: "A reminder",
+        body: "If you did not consent, it was not your fault. Not if you froze. Not if you knew them. Not if you waited to tell anyone.",
+      },
+      {
+        title: "A reminder",
+        body: "You're allowed to be angry, but not at yourself.",
       },
     ],
     decision: "The decision stays with you.",
@@ -81,6 +101,13 @@ const copy = {
       { label: "Under 18", numbers: ["116"] },
     ],
     footer: "Kenya · Adults 18+",
+    footerTagline: "Your Voice. Your Rights. Your Support.",
+    footerAbout:
+      "Free, confidential support for adults in Kenya who have faced sexual harassment.",
+    footerExplore: "On this site",
+    footerHelp: "Talk to someone now",
+    footerHome: "Home",
+    footerNavLabel: "Footer",
     screens: {
       learn: {
         index: "01",
@@ -299,25 +326,45 @@ const copy = {
       },
     ],
     howTitle: "Nia inasaidiaje",
-    howLine: "Haijalishi umepitia nini, unaweza kuanza hapa. Hatua inayofuata ni yako.",
+    howLine: "Wewe unaamua kinachofuata, kwa mwendo wako.",
     how: [
       {
-        id: "helplines",
-        title: "Msaada",
-        line: "Nambari zilizothibitishwa Kenya, kila moja ina jina ujue nani anapokea.",
-        image: "/images/support.png",
+        title: "Elewa kilichotokea",
+        line: "Tambua unyanyasaji na matumizi mabaya ya mamlaka. Si kosa lako kamwe.",
       },
       {
-        id: "learn",
-        title: "Jifunze",
-        line: "Tabia inayotia wasiwasi inaweza kuonekanaje, na jinsi ya kumsaidia mtu anayekueleza.",
-        image: "/images/learn.png",
+        title: "Jua haki zako",
+        line: "Sheria ya Kenya kwa lugha rahisi, iliyokaguliwa dhidi ya vyanzo rasmi.",
       },
       {
-        id: "rights",
-        title: "Chaguo zako",
-        line: "Taarifa unazoweza kutumia ukiwa tayari. Wewe unaamua kama utaripoti.",
-        image: "/images/rights.png",
+        title: "Weka kumbukumbu ya faragha",
+        line: "Andika kilichotokea. Ni wewe pekee unayeiona, isipokuwa ukishiriki.",
+      },
+      {
+        title: "Jua kama huuko peke yako",
+        line: "Taja kwa faragha aliyekudhuru. Mtu mwingine akimtaja pia, tutakujulisha.",
+      },
+      {
+        title: "Fikia msaada uliothibitishwa",
+        line: "Washauri, msaada wa kisheria, huduma za matibabu na nambari za msaada zilizokaguliwa.",
+      },
+      {
+        title: "Msaada unapoambiwa unyamaze",
+        line: "Elewa chaguo zako wengine wakikushinikiza unyamaze.",
+      },
+    ],
+    howCloseTitle: "Uko kwenye udhibiti",
+    howCloseLine: "Hakuna kinachoshirikiwa bila ruhusa yako",
+    reminderTitle: "Ukumbusho",
+    reminderDots: "Vikumbusho",
+    reminders: [
+      {
+        title: "Ukumbusho",
+        body: "Ikiwa hukukubali, haikuwa kosa lako. Hata kama uliganda. Hata kama uliwajua. Hata kama ulichelewa kumwambia mtu.",
+      },
+      {
+        title: "Ukumbusho",
+        body: "Unaruhusiwa kuwa na hasira, lakini si kwako mwenyewe.",
       },
     ],
     decision: "Uamuzi uko kwako.",
@@ -334,6 +381,13 @@ const copy = {
       { label: "Chini ya miaka 18", numbers: ["116"] },
     ],
     footer: "Kenya · Miaka 18+",
+    footerTagline: "Sauti yako. Haki zako. Msaada wako.",
+    footerAbout:
+      "Msaada wa bure, wa faragha kwa watu wazima Kenya waliokumbana na unyanyasaji wa kingono.",
+    footerExplore: "Kwenye tovuti hii",
+    footerHelp: "Zungumza na mtu sasa",
+    footerHome: "Mwanzo",
+    footerNavLabel: "Kijachini",
     screens: {
       learn: {
         index: "01",

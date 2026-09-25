@@ -5,6 +5,7 @@ import Header from "./components/Header.jsx";
 import HelpLine from "./components/HelpLine.jsx";
 import Helplines from "./components/Helplines.jsx";
 import Home from "./components/Home.jsx";
+import Reminder from "./components/Reminder.jsx";
 import Screen from "./components/Screen.jsx";
 
 export default function App() {
@@ -51,20 +52,17 @@ export default function App() {
       <main id="content">
         {view === "home" ? (
           <Home text={text} onOpen={open} />
+        ) : view === "helplines" ? (
+          <Helplines language={language} text={text} />
         ) : (
-          <div className="wrap">
-            {view === "helplines" ? (
-              <Helplines language={language} text={text} />
-            ) : (
-              <Screen id={view} screen={text.screens[view]} onOpen={open} />
-            )}
-          </div>
+          <Screen id={view} screen={text.screens[view]} onOpen={open} />
         )}
         <div className="wrap">
           <HelpLine text={text} onOpen={open} />
         </div>
+        {view === "home" && <Reminder key={language} text={text} />}
       </main>
-      <Footer text={text} />
+      <Footer text={text} onNavigate={open} />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { leaveSite } from "../scroll.js";
 
 export default function Header({ language, text, view, onLanguage, onNavigate, onHelp }) {
   const headerRef = useRef(null);
@@ -12,37 +11,46 @@ export default function Header({ language, text, view, onLanguage, onNavigate, o
       document.documentElement.style.setProperty("--header-h", `${node.offsetHeight}px`);
     };
 
+    const onScroll = () => {
+      node.classList.toggle("is-scrolled", window.scrollY > 8);
+    };
+
     apply();
+    onScroll();
     const observer = new ResizeObserver(apply);
     observer.observe(node);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
     <header className="site-header" ref={headerRef}>
-      <a className="skip-link" href="#content">
-        {text.skip}
-      </a>
       <div className="help-bar">
         <div className="help-bar-inner">
+          <div className="lang" role="group" aria-label="Language">
+            <button type="button" aria-pressed={language === "en"} onClick={() => onLanguage("en")}>
+              EN
+            </button>
+            <span aria-hidden="true">/</span>
+            <button type="button" aria-pressed={language === "sw"} onClick={() => onLanguage("sw")}>
+              SW
+            </button>
+          </div>
           <p className="help-bar-call">
             <span>{text.helpBar}</span>
             <a href="tel:1195">1195</a>
-          </p>
-          <div className="help-bar-actions">
             <button type="button" className="bar-button bar-button-help" onClick={onHelp}>
               {text.help}
             </button>
-            <button type="button" className="bar-button" onClick={leaveSite}>
-              {text.exit}
-            </button>
-          </div>
+          </p>
         </div>
       </div>
       <div className="header-inner">
-        <button type="button" className="brand" onClick={() => onNavigate("home")}>
-          Nia
-          <span className="visually-hidden"> home</span>
+        <button type="button" className="brand" aria-label="Nia home" onClick={() => onNavigate("home")}>
+          <img src="/images/logo.png" alt="" />
         </button>
 
         <nav className="site-nav" aria-label="Primary">
@@ -58,16 +66,6 @@ export default function Header({ language, text, view, onLanguage, onNavigate, o
             </button>
           ))}
         </nav>
-
-        <div className="lang" role="group" aria-label="Language">
-          <button type="button" aria-pressed={language === "en"} onClick={() => onLanguage("en")}>
-            EN
-          </button>
-          <span aria-hidden="true">/</span>
-          <button type="button" aria-pressed={language === "sw"} onClick={() => onLanguage("sw")}>
-            SW
-          </button>
-        </div>
       </div>
     </header>
   );

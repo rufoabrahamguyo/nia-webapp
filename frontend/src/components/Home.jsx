@@ -1,6 +1,6 @@
 export default function Home({ text, onOpen }) {
   return (
-    <div className="home">
+    <>
       <section className="hero-home" aria-labelledby="banner-title">
         <div className="hero-copy">
           <p className="eyebrow">{text.eyebrow}</p>
@@ -48,23 +48,24 @@ export default function Home({ text, onOpen }) {
         </ul>
       </section>
 
-      <section className="how" aria-labelledby="how-title">
-        <h2 id="how-title">{text.howTitle}</h2>
-        <p className="how-line">{text.howLine}</p>
-        <ul className="how-list">
-          {text.how.map((item) => (
-            <li key={item.id}>
-              <button type="button" className="photo-card" onClick={() => onOpen(item.id)}>
-                <img src={item.image} alt="" />
-                <span className="photo-copy">
-                  <span className="path-title">{item.title}</span>
-                  <span className="path-line">{item.line}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+      <section className="how-scene" aria-labelledby="how-title">
+        <div className="how-scene-copy">
+          <h2 id="how-title">{text.howTitle}</h2>
+          <p className="how-scene-lede">{text.howLine}</p>
+          <ul>
+            {text.how.map((item) => (
+              <li key={item.title}>
+                <strong>{item.title}</strong>
+                <span>{item.line}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="how-scene-close">
+            <strong>{text.howCloseTitle}</strong>
+            <span>{text.howCloseLine}</span>
+          </p>
+        </div>
       </section>
-    </div>
+    </>
   );
 }

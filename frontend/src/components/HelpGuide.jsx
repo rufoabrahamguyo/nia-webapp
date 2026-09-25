@@ -1,14 +1,12 @@
-export default function HelpGuide({ guide, onOpen, headingId = "guide-title" }) {
+export default function HelpGuide({ sections, layout = "topics", onOpen }) {
   return (
-    <article className="guide" aria-labelledby={headingId}>
-      <h2 id={headingId}>{guide.title}</h2>
-      <p className="lede">{guide.lede}</p>
-      {guide.sections.map((section) => (
-        <section className="guide-block" key={section.title}>
+    <div className={`story-grid story-grid-${layout}`}>
+      {sections.map((section) => (
+        <article className="story-card" key={section.title}>
           <h3>{section.title}</h3>
-          <p>{section.body}</p>
+          {section.body ? <p>{section.body}</p> : null}
           {section.points ? (
-            <ul className="guide-list">
+            <ul className={layout === "record" ? "record-points" : "guide-list"}>
               {section.points.map((point) => (
                 <li key={point}>{point}</li>
               ))}
@@ -27,8 +25,8 @@ export default function HelpGuide({ guide, onOpen, headingId = "guide-title" }) 
               <span aria-hidden="true"> →</span>
             </button>
           ) : null}
-        </section>
+        </article>
       ))}
-    </article>
+    </div>
   );
 }
