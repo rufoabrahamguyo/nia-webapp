@@ -2,10 +2,12 @@
   "name": "nia-webapp",
   "private": true,
   "workspaces": [
-    "frontend"
+    "frontend",
+    "backend"
   ],
   "scripts": {
     "dev": "npm run dev -w frontend",
+    "dev:api": "npm run dev -w backend",
     "build": "npm run build -w frontend",
     "lint": "npm run lint -w frontend",
     "preview": "npm run preview -w frontend"

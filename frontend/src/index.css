@@ -110,12 +110,63 @@ a:focus-visible {
   width: auto;
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 22px;
+  margin-left: auto;
+}
+
 .site-nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 4px 28px;
-  margin-left: auto;
+}
+
+.account-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.account-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 200px;
+  overflow: hidden;
+  color: var(--ink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.account-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.account-signup {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 1rem;
 }
 
 .nav-button,
@@ -333,7 +384,7 @@ a:focus-visible {
   box-sizing: border-box;
   background:
     linear-gradient(90deg, rgba(4, 14, 36, 0.72) 0%, rgba(4, 14, 36, 0.38) 46%, rgba(4, 14, 36, 0.08) 74%),
-    url("/images/hero.jpg") center 46% / cover no-repeat;
+    url("/images/local-march.jpg") center 42% / cover no-repeat;
   color: var(--white);
 }
 
@@ -448,8 +499,16 @@ a:focus-visible {
   box-shadow: 0 10px 28px rgba(27, 42, 74, 0.16);
 }
 
+.orbit-0 img {
+  object-position: center 30%;
+}
+
+.orbit-1 img {
+  object-position: center 28%;
+}
+
 .orbit-2 img {
-  object-position: 62% 38%;
+  object-position: 18% 42%;
 }
 
 .hero-home .orbit figcaption {
@@ -488,7 +547,7 @@ a:focus-visible {
   padding: calc(var(--header-h) + 28px) var(--edge) 72px;
   background:
     linear-gradient(90deg, rgba(8, 12, 22, 0.08) 0%, rgba(8, 12, 22, 0.28) 34%, rgba(8, 12, 22, 0.72) 58%, rgba(8, 12, 22, 0.88) 100%),
-    url("/images/how-helps.jpg") 18% center / cover no-repeat;
+    url("/images/local-gathering.jpg") 22% center / cover no-repeat;
   color: var(--white);
 }
 
@@ -852,7 +911,7 @@ h1 {
 }
 
 .page-learn {
-  --scene: url("/images/learn.jpg");
+  --scene: url("/images/local-care.jpg");
 }
 
 .page-learn .page-hero:not(.page-hero-guide) {
@@ -860,7 +919,7 @@ h1 {
 }
 
 .page-rights {
-  --scene: url("/images/rights.png");
+  --scene: url("/images/local-march.jpg");
 }
 
 .page-rights .page-hero {
@@ -868,11 +927,11 @@ h1 {
 }
 
 .page-support {
-  --scene: url("/images/support.png");
+  --scene: url("/images/local-care.jpg");
 }
 
 .page-helplines {
-  --scene: url("/images/helplines.jpg");
+  --scene: url("/images/local-care.jpg");
 }
 
 .page-helplines .page-hero {
@@ -880,11 +939,11 @@ h1 {
 }
 
 .page-document {
-  --scene: url("/images/document.png");
+  --scene: url("/images/local-care.jpg");
 }
 
 .page-hero-guide {
-  --scene: url("/images/how-scene.jpg");
+  --scene: url("/images/local-gathering.jpg");
   justify-content: flex-end;
   height: 42dvh;
   min-height: 260px;
@@ -1039,7 +1098,7 @@ h1 {
   height: 460px;
   background:
     linear-gradient(to top, rgba(8, 12, 22, 0.82) 0%, rgba(8, 12, 22, 0.28) 55%, rgba(8, 12, 22, 0.08) 100%),
-    url("/images/reminder.jpg") center 42% / cover no-repeat;
+    url("/images/local-care.jpg") center 30% / cover no-repeat;
   color: var(--white);
 }
 
@@ -1403,7 +1462,7 @@ h1 {
     justify-content: flex-start;
     background:
       linear-gradient(180deg, rgba(8, 12, 22, 0.82) 0%, rgba(8, 12, 22, 0.72) 100%),
-      url("/images/how-helps.jpg") 30% 35% / cover no-repeat;
+      url("/images/local-gathering.jpg") center 40% / cover no-repeat;
   }
 
   .page-hero-guide {
@@ -1439,10 +1498,9 @@ h1 {
 }
 
 @media (max-width: 900px) {
-  .site-nav {
+  .header-actions {
     flex: 1 1 100%;
     margin-left: 0;
-    justify-content: flex-end;
   }
 }
 
@@ -1463,7 +1521,7 @@ h1 {
     padding-bottom: 28px;
     background:
       linear-gradient(to top, rgba(4, 14, 36, 0.88) 0%, rgba(4, 14, 36, 0.55) 42%, rgba(4, 14, 36, 0.12) 100%),
-      url("/images/hero.jpg") center 42% / cover no-repeat;
+      url("/images/local-march.jpg") center 42% / cover no-repeat;
   }
 }
 
@@ -1533,6 +1591,187 @@ h1 {
 @media (min-width: 980px) {
   .site-nav {
     flex-wrap: nowrap;
+  }
+}
+
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: calc(100dvh - var(--header-h));
+  background: var(--paper);
+}
+
+.auth-visual {
+  display: none;
+}
+
+.auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px var(--edge) 56px;
+}
+
+.auth-form {
+  width: min(100%, 420px);
+}
+
+.auth-form h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.auth-line {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 16px;
+  font-weight: 700;
+}
+
+.auth-field input {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #f4f7fb;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.auth-choice {
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.auth-choice legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.auth-choice label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.auth-choice label span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.auth-choice label span span {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.auth-error {
+  margin: 16px 0 0;
+  color: var(--help);
+  font-weight: 700;
+}
+
+.auth-google {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-top: 22px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-google:hover {
+  background: #f4f7fb;
+}
+
+.auth-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.auth-or::before,
+.auth-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.auth-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.auth-switch {
+  margin: 16px 0 0;
+}
+
+.auth-switch .next-link {
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 900px) {
+  .auth-split {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .auth-visual {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 48px;
+    background:
+      linear-gradient(to top, rgba(4, 14, 36, 0.78) 0%, rgba(4, 14, 36, 0.2) 55%, rgba(4, 14, 36, 0.12) 100%),
+      url("/images/local-care.jpg") center 35% / cover no-repeat;
+    color: var(--white);
+  }
+
+  .auth-visual-caption {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .auth-visual-line {
+    margin: 0;
+    max-width: 14ch;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
   }
 }
 

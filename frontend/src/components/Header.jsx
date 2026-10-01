@@ -1,6 +1,16 @@
 import { useEffect, useRef } from "react";
 
-export default function Header({ language, text, view, onLanguage, onNavigate, onHelp }) {
+export default function Header({
+  language,
+  text,
+  view,
+  user,
+  authReady,
+  onLanguage,
+  onNavigate,
+  onHelp,
+  onLogout,
+}) {
   const headerRef = useRef(null);
 
   useEffect(() => {
@@ -53,19 +63,57 @@ export default function Header({ language, text, view, onLanguage, onNavigate, o
           <img src="/images/logo.png" alt="" />
         </button>
 
-        <nav className="site-nav" aria-label="Primary">
-          {text.nav.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className="nav-button"
-              aria-current={view === item.id ? "page" : undefined}
-              onClick={() => onNavigate(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        <div className="header-actions">
+          <nav className="site-nav" aria-label="Primary">
+            {text.nav.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="nav-button"
+                aria-current={view === item.id ? "page" : undefined}
+                onClick={() => onNavigate(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          {authReady && (
+            <div className="account-nav">
+              {user ? (
+                <>
+                  <span className="account-name">
+                    <span className="account-mark" aria-hidden="true">
+                      {user.username.trim().charAt(0).toLocaleUpperCase()}
+                    </span>
+                    <span className="account-label">{user.username}</span>
+                  </span>
+                  <button type="button" className="nav-button" onClick={onLogout}>
+                    {text.logOut}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="nav-button"
+                    aria-current={view === "login" ? "page" : undefined}
+                    onClick={() => onNavigate("login")}
+                  >
+                    {text.logIn}
+                  </button>
+                  <button
+                    type="button"
+                    className="button button-accent account-signup"
+                    aria-current={view === "signup" ? "page" : undefined}
+                    onClick={() => onNavigate("signup")}
+                  >
+                    {text.signUp}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

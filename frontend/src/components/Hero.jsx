@@ -7,7 +7,7 @@ export default function Hero() {
       <p className="eyebrow">Survivor-centred support · Kenya</p>
       <h1 id="hero-heading">Understand your options. Decide in your own time.</h1>
       <p className="lede">
-        Nia is for adults who have faced sexual harassment where speaking up is hard — because of a
+        Nia is for adults who have faced sexual harassment where speaking up is hard, because of a
         lecturer or supervisor, because of work, or because other people want the matter kept quiet.
         You can learn, see your rights, keep a private record, and reach verified support. You decide
         what happens next.
