@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import { requireSecret } from "./auth.js";
 import { connectDb } from "./db.js";
 import authRoutes from "./routes/auth.js";
+import recordRoutes from "./routes/records.js";
 
 const port = Number(process.env.PORT || 4000);
 const app = express();
@@ -17,7 +18,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json({ limit: "16kb" }));
+app.use(express.json({ limit: "48kb" }));
 app.use(cookieParser());
 app.use(
   "/api/auth",
@@ -30,6 +31,17 @@ app.use(
   }),
 );
 app.use("/api/auth", authRoutes);
+app.use(
+  "/api/records",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "request_failed" },
+  }),
+);
+app.use("/api/records", recordRoutes);
 app.use((error, _req, res, _next) => {
   console.error("request failed");
   if (res.headersSent) return;

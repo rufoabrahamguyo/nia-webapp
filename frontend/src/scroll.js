@@ -6,5 +6,19 @@ export function scrollToSection(id) {
 }
 
 export function leaveSite() {
-  window.location.replace("/neutral.html");
+  const logout = fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: "{}",
+    keepalive: true,
+  }).catch(() => {});
+
+  const wait = new Promise((resolve) => {
+    setTimeout(resolve, 700);
+  });
+
+  Promise.race([logout, wait]).then(() => {
+    window.location.replace("/neutral.html");
+  });
 }

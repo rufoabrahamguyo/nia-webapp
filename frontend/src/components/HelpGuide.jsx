@@ -20,7 +20,7 @@ export default function HelpGuide({ sections, layout = "topics", onOpen }) {
             </ul>
           ) : null}
           {section.action ? (
-            <button type="button" className="next-link" onClick={() => onOpen(section.action.id)}>
+            <button type="button" className="next-link" onClick={() => onOpen(section.action.id, section.action.anchor)}>
               {section.action.label}
               <span aria-hidden="true"> →</span>
             </button>

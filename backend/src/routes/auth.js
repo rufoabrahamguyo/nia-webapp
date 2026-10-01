@@ -174,6 +174,61 @@ router.post("/google/complete", async (req, res) => {
   res.status(201).json(publicUser(result.user));
 });
 
+router.post("/username", async (req, res) => {
+  const userId = readUserId(req);
+  if (!userId) {
+    sendError(res, 401, "invalid_credentials");
+    return;
+  }
+  const user = await User.findById(userId);
+  if (!user) {
+    clearSession(res);
+    sendError(res, 401, "invalid_credentials");
+    return;
+  }
+
+  const usernameKind = req.body?.usernameKind === "chosen" ? "chosen" : "anonymous";
+  if (usernameKind === "anonymous") {
+    if (user.usernameKind === "anonymous") {
+      res.json(publicUser(user));
+      return;
+    }
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      user.username = generateUsername();
+      user.usernameKind = "anonymous";
+      try {
+        await user.save();
+        res.json(publicUser(user));
+        return;
+      } catch (error) {
+        if (error?.code !== 11000) throw error;
+      }
+    }
+    sendError(res, 400, "account_unavailable");
+    return;
+  }
+
+  const username = normalizeUsername(req.body?.username);
+  const problem = usernameError(username);
+  if (problem) {
+    sendError(res, 400, problem);
+    return;
+  }
+
+  user.username = username;
+  user.usernameKind = "chosen";
+  try {
+    await user.save();
+  } catch (error) {
+    if (error?.code === 11000) {
+      sendError(res, 400, "username_taken");
+      return;
+    }
+    throw error;
+  }
+  res.json(publicUser(user));
+});
+
 router.post("/logout", (_req, res) => {
   clearSession(res);
   clearGooglePending(res);

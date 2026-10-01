@@ -14,6 +14,7 @@ export function publicUser(user) {
   return {
     username: user.username,
     usernameKind: user.usernameKind,
+    email: user.email,
   };
 }
 

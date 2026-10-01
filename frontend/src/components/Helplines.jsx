@@ -33,13 +33,26 @@ export default function Helplines({ language, text }) {
     <article className="page page-helplines">
       <header className="page-hero">
         <div className="page-hero-copy">
-          <p className="screen-index">05</p>
           <h1 id="helplines-title">{text.helplinesTitle}</h1>
           <p className="lede">{text.helplinesLine}</p>
         </div>
       </header>
 
       <div className="page-band">
+        <section className="urgent" id="just-happened" aria-labelledby="urgent-title">
+          <h2 id="urgent-title">{text.urgent.title}</h2>
+          <p>{text.urgent.lede}</p>
+          <ul className="guide-list">
+            {text.urgent.questions.map((question) => (
+              <li key={question}>{question}</li>
+            ))}
+          </ul>
+          <p className="fine">{text.urgent.lines}</p>
+          <a className="button button-accent urgent-call" href="tel:1195">
+            {text.urgent.call}
+          </a>
+        </section>
+
         <h2 className="group-label">{text.callNow}</h2>
         <div className="line-list">
           {now.map((line) => (

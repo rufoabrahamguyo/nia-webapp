@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { requestAuth } from "./auth.js";
 import copy from "./copy.js";
+import { leaveSite } from "./scroll.js";
+import Account from "./components/Account.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
@@ -36,15 +38,16 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [view, anchor, scrollKey]);
 
-  function open(next) {
+  function open(next, nextAnchor) {
     if (next === "support-someone") {
       setView("learn");
       setAnchor("guide-title");
       setScrollKey((key) => key + 1);
       return;
     }
-    setAnchor(null);
+    setAnchor(nextAnchor || null);
     setView(next);
+    setScrollKey((key) => key + 1);
   }
 
   function showHelp() {
@@ -97,6 +100,7 @@ export default function App() {
         onLanguage={setLanguage}
         onNavigate={open}
         onHelp={showHelp}
+        onLeave={leaveSite}
         onLogout={logout}
       />
       <main id="content">
@@ -116,8 +120,26 @@ export default function App() {
           <Home text={text} onOpen={open} />
         ) : view === "helplines" ? (
           <Helplines language={language} text={text} />
+        ) : view === "profile" || view === "settings" ? (
+          user && (
+            <Account
+              key={view}
+              mode={view}
+              text={text}
+              user={user}
+              onNavigate={open}
+              onUser={setUser}
+            />
+          )
         ) : (
-          <Screen id={view} screen={text.screens[view]} onOpen={open} />
+          <Screen
+            id={view}
+            screen={text.screens[view]}
+            text={text}
+            user={user}
+            language={language}
+            onOpen={open}
+          />
         )}
         {!isAuth && (
           <div className="wrap">

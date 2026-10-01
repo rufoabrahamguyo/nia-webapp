@@ -1,4 +1,6 @@
 import HelpGuide from "./HelpGuide.jsx";
+import PrivateRecord from "./PrivateRecord.jsx";
+import Scripts from "./Scripts.jsx";
 
 function NextLink({ screen, onOpen }) {
   return (
@@ -15,17 +17,18 @@ function layoutFor(id) {
   return "topics";
 }
 
-export default function Screen({ id, screen, onOpen }) {
+export default function Screen({ id, screen, text, user, language, onOpen }) {
   const hasSections = Boolean(screen.sections);
   const hasGuide = Boolean(screen.guide);
+  const sections = screen.sections?.filter((section) => !(section.guestOnly && user));
+  const heroBody = user && screen.bodySignedIn ? screen.bodySignedIn : screen.body;
 
   return (
     <article className={`page page-${id}`}>
       <header className="page-hero">
         <div className="page-hero-copy">
-          <p className="screen-index">{screen.index}</p>
           <h1 id="screen-title">{screen.title}</h1>
-          <p className="lede">{screen.body}</p>
+          <p className="lede">{heroBody}</p>
         </div>
       </header>
 
@@ -35,7 +38,11 @@ export default function Screen({ id, screen, onOpen }) {
             <h2 id="section-title">{screen.sectionsTitle}</h2>
             <p>{screen.sectionsLede}</p>
           </div>
-          <HelpGuide sections={screen.sections} layout={layoutFor(id)} onOpen={onOpen} />
+          {id === "document" ? (
+            <PrivateRecord user={user} text={text} language={language} onOpen={onOpen} />
+          ) : null}
+          <HelpGuide sections={sections} layout={layoutFor(id)} onOpen={onOpen} />
+          {screen.scripts ? <Scripts key={language} scripts={screen.scripts} /> : null}
           {hasGuide ? null : <NextLink screen={screen} onOpen={onOpen} />}
         </section>
       ) : null}
