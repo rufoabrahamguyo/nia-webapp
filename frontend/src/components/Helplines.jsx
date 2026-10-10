@@ -1,10 +1,43 @@
+import { useEffect, useState } from "react";
 import { linesFor } from "../helplines.js";
 
-function LineCard({ line }) {
+function fromDirectory(language, group) {
+  return linesFor(language, group).map((line) => ({ ...line, hours: "", free: null }));
+}
+
+function fromApi(entry, language) {
+  const call = language === "sw" ? "Piga" : "Call";
+  const textWord = language === "sw" ? "Ujumbe" : "Text";
+  const actions = entry.numbers.map((number) => ({
+    label: `${call} ${number}`,
+    href: `tel:${number.replace(/[^\d+]/g, "")}`,
+  }));
+  if (entry.sms) {
+    actions.push({ label: `${textWord} ${entry.sms}`, href: `sms:${entry.sms.replace(/[^\d+]/g, "")}` });
+  }
+  if (entry.whatsapp) actions.push({ label: "WhatsApp", href: entry.whatsapp });
+  return {
+    id: entry.id,
+    name: entry.name[language] || entry.name.en,
+    who: entry.who[language] || entry.who.en,
+    hours: entry.hours[language] || entry.hours.en,
+    free: entry.free,
+    actions,
+    site: entry.site,
+  };
+}
+
+function LineCard({ line, text }) {
   return (
     <article className="line-card">
       <h3>{line.name}</h3>
       <p>{line.who}</p>
+      {line.hours ? (
+        <p className="line-meta">
+          {text.hoursLabel}: {line.hours}
+        </p>
+      ) : null}
+      {typeof line.free === "boolean" ? <p className="line-meta">{line.free ? text.freeYes : text.freeNo}</p> : null}
       <div className="line-actions">
         {line.actions.map((action) => (
           <a
@@ -26,8 +59,27 @@ function LineCard({ line }) {
 }
 
 export default function Helplines({ language, text }) {
-  const now = linesFor(language, "now");
-  const organisations = linesFor(language, "org");
+  const [remote, setRemote] = useState(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/helplines")
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((data) => {
+        if (!cancelled) setRemote(data.helplines || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRemote(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const now = remote ? remote.filter((entry) => entry.group === "now").map((entry) => fromApi(entry, language)) : fromDirectory(language, "now");
+  const organisations = remote
+    ? remote.filter((entry) => entry.group === "org").map((entry) => fromApi(entry, language))
+    : fromDirectory(language, "org");
 
   return (
     <article className="page page-helplines">
@@ -56,14 +108,14 @@ export default function Helplines({ language, text }) {
         <h2 className="group-label">{text.callNow}</h2>
         <div className="line-list">
           {now.map((line) => (
-            <LineCard key={line.name} line={line} />
+            <LineCard key={line.id || line.name} line={line} text={text} />
           ))}
         </div>
 
         <h2 className="group-label">{text.organisations}</h2>
         <div className="line-list">
           {organisations.map((line) => (
-            <LineCard key={line.name} line={line} />
+            <LineCard key={line.id || line.name} line={line} text={text} />
           ))}
         </div>
 

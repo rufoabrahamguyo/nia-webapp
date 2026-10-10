@@ -2,6 +2,7 @@ import { Router } from "express";
 import User from "../models/User.js";
 import { generateUsername, normalizeUsername, usernameError } from "../username.js";
 import {
+  clearAdminSession,
   clearSession,
   hashPassword,
   passwordMatches,
@@ -48,7 +49,7 @@ async function createAccount(fields, usernameKind, chosenName) {
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const nextName = usernameKind === "anonymous" ? generateUsername() : username;
     try {
-      const user = await User.create({ ...fields, username: nextName, usernameKind });
+      const user = await User.create({ ...fields, username: nextName, usernameKind, role: "visitor" });
       return { user };
     } catch (error) {
       if (error?.code !== 11000) throw error;
@@ -89,7 +90,7 @@ router.post("/login", async (req, res) => {
   const password = String(req.body?.password || "");
   const user = await User.findOne({ email }).select("+passwordHash");
   const matches = await passwordMatches(password, user?.passwordHash || unusedPasswordHash());
-  if (!user?.passwordHash || !matches) {
+  if (!user?.passwordHash || !matches || user.role === "admin") {
     sendError(res, 401, "invalid_credentials");
     return;
   }
@@ -128,6 +129,10 @@ router.get("/google/callback", async (req, res) => {
   }
 
   const byGoogle = await User.findOne({ googleId: identity.googleId });
+  if (byGoogle?.role === "admin") {
+    redirectHome(res, { auth_error: "google_failed" });
+    return;
+  }
   if (byGoogle) {
     signSession(res, byGoogle._id);
     redirectHome(res);
@@ -135,6 +140,10 @@ router.get("/google/callback", async (req, res) => {
   }
 
   const byEmail = await User.findOne({ email: identity.email });
+  if (byEmail?.role === "admin") {
+    redirectHome(res, { auth_error: "google_failed" });
+    return;
+  }
   if (byEmail) {
     if (byEmail.googleId && byEmail.googleId !== identity.googleId) {
       redirectHome(res, { auth_error: "google_failed" });
@@ -181,7 +190,7 @@ router.post("/username", async (req, res) => {
     return;
   }
   const user = await User.findById(userId);
-  if (!user) {
+  if (!user || user.role === "admin") {
     clearSession(res);
     sendError(res, 401, "invalid_credentials");
     return;
@@ -231,6 +240,7 @@ router.post("/username", async (req, res) => {
 
 router.post("/logout", (_req, res) => {
   clearSession(res);
+  clearAdminSession(res);
   clearGooglePending(res);
   res.json({ ok: true });
 });
@@ -242,7 +252,7 @@ router.get("/me", async (req, res) => {
     return;
   }
   const user = await User.findById(userId);
-  if (!user) {
+  if (!user || user.role === "admin") {
     clearSession(res);
     sendError(res, 401, "invalid_credentials");
     return;

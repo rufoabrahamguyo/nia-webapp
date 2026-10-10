@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     googleId: { type: String, unique: true, sparse: true },
     username: { type: String, required: true, unique: true, lowercase: true, trim: true },
     usernameKind: { type: String, required: true, enum: ["anonymous", "chosen"] },
+    role: { type: String, required: true, enum: ["visitor", "admin"], default: "visitor" },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );

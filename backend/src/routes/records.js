@@ -1,8 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { clearSession, readUserId } from "../auth.js";
+import { requireVisitor } from "../guards.js";
 import Record from "../models/Record.js";
-import User from "../models/User.js";
 
 const router = Router();
 const MAX_BODY = 20000;
@@ -23,18 +22,7 @@ function publicRecord(record) {
 }
 
 async function requireUser(req, res) {
-  const userId = readUserId(req);
-  if (!userId) {
-    sendError(res, 401, "invalid_credentials");
-    return null;
-  }
-  const user = await User.findById(userId).select("_id");
-  if (!user) {
-    clearSession(res);
-    sendError(res, 401, "invalid_credentials");
-    return null;
-  }
-  return user;
+  return requireVisitor(req, res);
 }
 
 function readBody(req, res) {

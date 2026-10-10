@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { requestAuth } from "./auth.js";
 import copy from "./copy.js";
+import { applyPage } from "./pages.js";
 import { leaveSite } from "./scroll.js";
 import Account from "./components/Account.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
@@ -9,11 +10,13 @@ import Header from "./components/Header.jsx";
 import HelpLine from "./components/HelpLine.jsx";
 import Helplines from "./components/Helplines.jsx";
 import Home from "./components/Home.jsx";
+import NiaChat from "./components/NiaChat.jsx";
 import Reminder from "./components/Reminder.jsx";
 import Screen from "./components/Screen.jsx";
 
 export default function App() {
   const [language, setLanguage] = useState("en");
+  const [pages, setPages] = useState(null);
   const [view, setView] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("google") === "finish") return "google";
@@ -29,6 +32,7 @@ export default function App() {
   );
   const text = copy[language];
   const isAuth = view === "login" || view === "signup" || view === "google";
+  const screen = applyPage(text.screens[view], pages?.[view]?.[language]);
 
   useEffect(() => {
     if (anchor) {
@@ -60,6 +64,21 @@ export default function App() {
     if (params.has("auth_error") || params.has("google")) {
       window.history.replaceState({}, "", window.location.pathname);
     }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/pages")
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((data) => {
+        if (!cancelled) setPages(data.pages || {});
+      })
+      .catch(() => {
+        if (!cancelled) setPages(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -120,6 +139,8 @@ export default function App() {
           <Home text={text} onOpen={open} />
         ) : view === "helplines" ? (
           <Helplines language={language} text={text} />
+        ) : view === "chat" ? (
+          <NiaChat text={text} user={user} language={language} onOpen={open} />
         ) : view === "profile" || view === "settings" ? (
           user && (
             <Account
@@ -134,7 +155,7 @@ export default function App() {
         ) : (
           <Screen
             id={view}
-            screen={text.screens[view]}
+            screen={screen}
             text={text}
             user={user}
             language={language}
