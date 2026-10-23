@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { requestAuth } from "../auth.js";
+import { AvatarPicker } from "../avatars.jsx";
+import PasswordField from "./PasswordField.jsx";
 
 function GoogleMark() {
   return (
@@ -22,6 +24,7 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
   const [confirmPassword, setConfirmPassword] = useState("");
   const [usernameKind, setUsernameKind] = useState("anonymous");
   const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState("cat");
   const [errorCode, setErrorCode] = useState(initialErrorCode);
   const [pending, setPending] = useState(false);
   const error = errorCode ? auth.errors[errorCode] || auth.errors.request_failed : "";
@@ -40,6 +43,7 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
       const body = isGoogle ? { usernameKind } : { email, password };
       if (asksForName) {
         body.usernameKind = usernameKind;
+        body.avatar = avatar;
         if (usernameKind === "chosen") body.username = username;
       }
       const path = isGoogle ? "/api/auth/google/complete" : isSignup ? "/api/auth/signup" : "/api/auth/login";
@@ -87,35 +91,35 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
           )}
 
           {!isGoogle && (
-          <label className="auth-field">
-            <span>{auth.password}</span>
-            <input
-              type="password"
+            <PasswordField
+              label={auth.password}
               name="password"
               autoComplete={isSignup ? "new-password" : "current-password"}
-              required
               minLength={8}
               value={password}
               placeholder={auth.passwordPlaceholder}
               onChange={(event) => setPassword(event.target.value)}
+              showLabel={auth.showPassword}
+              hideLabel={auth.hidePassword}
             />
-          </label>
           )}
 
           {isSignup && (
-            <label className="auth-field">
-              <span>{auth.confirmPassword}</span>
-              <input
-                type="password"
-                name="confirmPassword"
-                autoComplete="new-password"
-                required
-                minLength={8}
-                value={confirmPassword}
-                placeholder={auth.passwordPlaceholder}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-              />
-            </label>
+            <PasswordField
+              label={auth.confirmPassword}
+              name="confirmPassword"
+              autoComplete="new-password"
+              minLength={8}
+              value={confirmPassword}
+              placeholder={auth.passwordPlaceholder}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              showLabel={auth.showPassword}
+              hideLabel={auth.hidePassword}
+            />
+          )}
+
+          {asksForName && (
+            <AvatarPicker legend={text.faces.legend} labels={text.faces} value={avatar} onChange={setAvatar} />
           )}
 
           {asksForName && (

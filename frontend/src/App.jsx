@@ -150,6 +150,7 @@ export default function App() {
               user={user}
               onNavigate={open}
               onUser={setUser}
+              onLogout={logout}
             />
           )
         ) : (

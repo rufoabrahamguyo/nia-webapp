@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { AnimalFace } from "../avatars.jsx";
 
 export default function Header({
   language,
@@ -96,8 +97,6 @@ export default function Header({
     accountButtonRef.current?.focus();
   }
 
-  const initial = user?.username?.trim().charAt(0).toLocaleUpperCase() || "";
-
   return (
     <header className="site-header" ref={headerRef}>
       <div className="help-bar">
@@ -162,7 +161,7 @@ export default function Header({
                       <span className="account-label">{user.username}</span>
                     </span>
                     <span className="account-mark" aria-hidden="true">
-                      {initial}
+                      <AnimalFace id={user.avatar} />
                     </span>
                     <ChevronIcon />
                   </button>

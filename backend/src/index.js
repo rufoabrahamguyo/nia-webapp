@@ -6,6 +6,10 @@ import rateLimit from "express-rate-limit";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { requireSecret } from "./auth.js";
+import { avatarForKey } from "./avatars.js";
+import { releaseLegacyQueue } from "./chatQueue.js";
+import User from "./models/User.js";
+import { requireRecordKey, sealLegacyRecords } from "./recordCrypto.js";
 import { connectDb } from "./db.js";
 import { ensureAdmin, seedHelplines } from "./seed.js";
 import adminRoutes from "./routes/admin.js";
@@ -102,7 +106,18 @@ if (existsSync(path.join(dist, "index.html"))) {
 }
 
 requireSecret();
+requireRecordKey();
 await connectDb(process.env.MONGODB_URI);
+await sealLegacyRecords();
+await releaseLegacyQueue();
+const missingAvatars = await User.find({
+  $or: [{ avatar: { $exists: false } }, { avatar: null }, { avatar: "" }],
+}).select("_id");
+await Promise.all(missingAvatars.map((user) => User.updateOne({ _id: user._id }, { $set: { avatar: avatarForKey(user._id) } })));
+await User.updateMany(
+  { passwordHash: { $exists: true, $nin: [null, ""] }, hasPassword: { $ne: true } },
+  { $set: { hasPassword: true } },
+);
 await seedHelplines();
 await ensureAdmin();
 app.listen(port, () => {

@@ -1,6 +1,31 @@
 import { useEffect, useState } from "react";
 import { requestAuth } from "../auth.js";
 
+const WHO = [
+  { en: "Emergency", sw: "Dharura" },
+  { en: "National line", sw: "Nambari ya kitaifa" },
+  { en: "one2one hotline", sw: "Simu ya one2one" },
+  { en: "Under 18", sw: "Chini ya miaka 18" },
+  { en: "Help line", sw: "Simu ya msaada" },
+  { en: "Women", sw: "Wanawake" },
+  { en: "Telecounselling", sw: "Ushauri kwa simu" },
+  { en: "Counselling", sw: "Ushauri" },
+  { en: "Medical hotline", sw: "Simu ya matibabu" },
+  { en: "Support for survivors", sw: "Msaada kwa walionusurika" },
+  { en: "Health coordination", sw: "Uratibu wa afya" },
+  { en: "Psychosocial support", sw: "Msaada wa kisaikolojia" },
+  { en: "If you are thinking about suicide", sw: "Ukiwa na mawazo ya kujiua" },
+];
+
+function whoKey(who) {
+  return `${who?.en || ""}\n${who?.sw || ""}`;
+}
+
+function whoChoices(current) {
+  if (!current?.en || WHO.some((item) => item.en === current.en && item.sw === current.sw)) return WHO;
+  return [current, ...WHO];
+}
+
 function emptyForm() {
   return {
     id: "",
@@ -37,7 +62,7 @@ function Field({ label, children }) {
   );
 }
 
-export default function AdminHelplines({ text, onError }) {
+export default function AdminHelplines({ text, language, onError }) {
   const [list, setList] = useState([]);
   const [form, setForm] = useState(null);
   const [pending, setPending] = useState(false);
@@ -117,17 +142,32 @@ export default function AdminHelplines({ text, onError }) {
               <option value="org">{text.groupOrg}</option>
             </select>
           </Field>
-          {["en", "sw"].map((language) => (
-            <fieldset key={language} className="admin-locale">
-              <legend>{language === "en" ? text.english : text.kiswahili}</legend>
+          <Field label={text.who}>
+            <select
+              required
+              value={whoKey(form.who)}
+              onChange={(event) => {
+                const next = whoChoices(form.who).find((item) => whoKey(item) === event.target.value);
+                setForm({ ...form, who: next ? { en: next.en, sw: next.sw } : { en: "", sw: "" } });
+                setSaved(false);
+              }}
+            >
+              <option value="">{text.whoChoose}</option>
+              {whoChoices(form.who).map((item) => (
+                <option key={whoKey(item)} value={whoKey(item)}>
+                  {item[language] || item.en}
+                </option>
+              ))}
+            </select>
+          </Field>
+          {["en", "sw"].map((locale) => (
+            <fieldset key={locale} className="admin-locale">
+              <legend>{locale === "en" ? text.english : text.kiswahili}</legend>
               <Field label={text.name}>
-                <input required value={form.name[language]} onChange={(event) => setPair("name", language, event.target.value)} />
-              </Field>
-              <Field label={text.who}>
-                <input required value={form.who[language]} onChange={(event) => setPair("who", language, event.target.value)} />
+                <input required value={form.name[locale]} onChange={(event) => setPair("name", locale, event.target.value)} />
               </Field>
               <Field label={text.hours}>
-                <input required value={form.hours[language]} onChange={(event) => setPair("hours", language, event.target.value)} />
+                <input required value={form.hours[locale]} onChange={(event) => setPair("hours", locale, event.target.value)} />
               </Field>
             </fieldset>
           ))}

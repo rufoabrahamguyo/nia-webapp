@@ -136,6 +136,10 @@ const DIRECTORY = [
 ];
 
 export async function seedHelplines() {
+  await Helpline.updateMany(
+    { "name.en": "Utumishi" },
+    { $set: { "name.en": "Police", "name.sw": "Polisi" } },
+  );
   const count = await Helpline.estimatedDocumentCount();
   if (count > 0) return;
   const lastChecked = new Date();

@@ -1,10 +1,13 @@
-export async function requestAuth(path, body, method) {
+export async function requestAuth(path, body, method, headers) {
   let response;
   try {
     response = await fetch(path, {
       method: method || (body ? "POST" : "GET"),
       credentials: "include",
-      headers: body ? { "Content-Type": "application/json" } : undefined,
+      headers: {
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(headers || {}),
+      },
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch {

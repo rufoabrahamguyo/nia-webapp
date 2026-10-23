@@ -11,10 +11,10 @@ export async function requireVisitor(req, res) {
     sendError(res, 401, "invalid_credentials");
     return null;
   }
-  const user = await User.findById(userId).select("_id role username");
-  if (!user || user.role === "admin") {
+  const user = await User.findById(userId).select("_id role username avatar deactivatedAt");
+  if (!user || user.role === "admin" || user.deactivatedAt) {
     clearSession(res);
-    sendError(res, 401, "invalid_credentials");
+    sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return null;
   }
   return user;

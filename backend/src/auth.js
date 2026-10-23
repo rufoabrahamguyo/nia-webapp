@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { avatarId } from "./avatars.js";
 
 const COOKIE = "nia_session";
 const ADMIN_COOKIE = "nia_admin";
@@ -38,7 +39,9 @@ export function publicUser(user) {
   return {
     username: user.username,
     usernameKind: user.usernameKind,
+    avatar: avatarId(user.avatar) || "cat",
     email: user.email,
+    hasPassword: Boolean(user.hasPassword),
   };
 }
 
@@ -84,4 +87,14 @@ export function unusedPasswordHash() {
 
 export async function passwordMatches(password, passwordHash) {
   return bcrypt.compare(password, passwordHash);
+}
+
+export function signRecordUnlock(userId) {
+  return jwt.sign({ sub: String(userId), purpose: "record" }, process.env.JWT_SECRET, { expiresIn: "15m" });
+}
+
+export function readRecordUnlock(token) {
+  const payload = readToken(token);
+  if (!payload || payload.purpose !== "record") return null;
+  return payload.sub || null;
 }

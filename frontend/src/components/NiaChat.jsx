@@ -1,5 +1,86 @@
 import { useEffect, useState } from "react";
 import { requestAuth } from "../auth.js";
+import { AnimalFace } from "../avatars.jsx";
+
+const REACTIONS = [
+  { id: "care", glyph: "💛" },
+  { id: "thanks", glyph: "🙏" },
+  { id: "strength", glyph: "💪" },
+  { id: "hope", glyph: "🌱" },
+];
+
+function FlagIcon({ filled }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 3.5v17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M6 4.5h11.2L14.6 9l2.6 4.5H6z" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ReportFlag({ id, reported, copy, pending, confirmId, setConfirmId, onReport }) {
+  const open = confirmId === id;
+  return (
+    <>
+      <button
+        type="button"
+        className={reported ? "chat-flag is-reported" : "chat-flag"}
+        aria-label={reported ? copy.reported : copy.report}
+        aria-pressed={reported || open}
+        disabled={pending || reported}
+        onClick={() => setConfirmId(open ? null : id)}
+      >
+        <FlagIcon filled={reported || open} />
+      </button>
+      {open ? (
+        <span className="chat-report-ask">
+          <span>{copy.reportAsk}</span>
+          <button type="button" className="chat-flag is-reported" aria-label={copy.report} onClick={onReport} disabled={pending}>
+            <FlagIcon filled />
+          </button>
+          <button type="button" className="next-link" onClick={() => setConfirmId(null)}>
+            {copy.cancel}
+          </button>
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function Reactions({ items, labels, pending, onReact }) {
+  return (
+    <div className="chat-react" role="group" aria-label={labels.group}>
+      {REACTIONS.map((item) => {
+        const found = (items || []).find((entry) => entry.emoji === item.id);
+        return (
+          <button
+            key={item.id}
+            type="button"
+            className="chat-emoji"
+            aria-pressed={Boolean(found?.mine)}
+            aria-label={labels[item.id]}
+            disabled={pending}
+            onClick={() => onReact(item.id)}
+          >
+            <span aria-hidden="true">{item.glyph}</span>
+            {found?.count ? <span>{found.count}</span> : null}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Author({ name, avatar, when, status }) {
+  return (
+    <p className="record-when chat-author">
+      <span className="chat-face"><AnimalFace id={avatar} /></span>
+      <span>{name}</span>
+      {when ? <span>{when}</span> : null}
+      {status}
+    </p>
+  );
+}
 
 function formatWhen(value, language) {
   const date = new Date(value);
@@ -10,34 +91,54 @@ function formatWhen(value, language) {
   }).format(date);
 }
 
-function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, onDelete, onComment }) {
+function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, onDelete, onComment, onReport, onReportComment, onReact, onReactComment }) {
   return (
     <div className="chat-list">
       {stories.map((story) => (
         <article className="story-card chat-story" key={story.id}>
-          <p className="record-when">
-            <span>{story.authorName}</span>
-            <span>{formatWhen(story.createdAt, language)}</span>
-            {story.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
-            {story.status === "hidden" ? <span className="chat-status">{copy.hidden}</span> : null}
-          </p>
+          <Author
+            name={story.authorName}
+            avatar={story.authorAvatar}
+            when={formatWhen(story.createdAt, language)}
+            status={
+              <>
+                {story.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
+                {story.status === "hidden" ? <span className="chat-status">{copy.hidden}</span> : null}
+              </>
+            }
+          />
           <p className="record-body">{story.body}</p>
-          {story.mine ? (
-            <div className="record-actions">
-              {confirmId === story.id ? (
-                <>
-                  <span>{copy.deleteAsk}</span>
-                  <button type="button" className="next-link" onClick={() => onDelete(story.id)} disabled={pending}>
+          {story.status === "allowed" || story.mine ? (
+            <div className="chat-tools">
+              {story.status === "allowed" ? (
+                <Reactions items={story.reactions} labels={copy.reactions} pending={pending} onReact={(emoji) => onReact(story.id, emoji)} />
+              ) : null}
+              {story.mine ? (
+                confirmId === story.id ? (
+                  <span className="chat-report-ask">
+                    <span>{copy.deleteAsk}</span>
+                    <button type="button" className="next-link" onClick={() => onDelete(story.id)} disabled={pending}>
+                      {copy.delete}
+                    </button>
+                    <button type="button" className="next-link" onClick={() => setConfirmId(null)}>
+                      {copy.cancel}
+                    </button>
+                  </span>
+                ) : (
+                  <button type="button" className="next-link" onClick={() => setConfirmId(story.id)}>
                     {copy.delete}
                   </button>
-                  <button type="button" className="next-link" onClick={() => setConfirmId(null)}>
-                    {copy.cancel}
-                  </button>
-                </>
+                )
               ) : (
-                <button type="button" className="next-link" onClick={() => setConfirmId(story.id)}>
-                  {copy.delete}
-                </button>
+                <ReportFlag
+                  id={`s:${story.id}`}
+                  reported={story.reported}
+                  copy={copy}
+                  pending={pending}
+                  confirmId={confirmId}
+                  setConfirmId={setConfirmId}
+                  onReport={() => onReport(story.id)}
+                />
               )}
             </div>
           ) : null}
@@ -45,12 +146,39 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
             <ul className="chat-comments">
               {story.comments.map((comment) => (
                 <li key={comment.id}>
-                  <p className="record-when">
-                    <span>{comment.authorName}</span>
-                    {comment.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
-                    {comment.status === "hidden" ? <span className="chat-status">{copy.hidden}</span> : null}
-                  </p>
+                  <Author
+                    name={comment.authorName}
+                    avatar={comment.authorAvatar}
+                    when=""
+                    status={
+                      <>
+                        {comment.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
+                        {comment.status === "hidden" ? <span className="chat-status">{copy.hidden}</span> : null}
+                      </>
+                    }
+                  />
                   <p>{comment.body}</p>
+                  {comment.status === "allowed" ? (
+                    <div className="chat-tools">
+                      <Reactions
+                        items={comment.reactions}
+                        labels={copy.reactions}
+                        pending={pending}
+                        onReact={(emoji) => onReactComment(story.id, comment.id, emoji)}
+                      />
+                      {!comment.mine ? (
+                        <ReportFlag
+                          id={`c:${comment.id}`}
+                          reported={comment.reported}
+                          copy={copy}
+                          pending={pending}
+                          confirmId={confirmId}
+                          setConfirmId={setConfirmId}
+                          onReport={() => onReportComment(story.id, comment.id)}
+                        />
+                      ) : null}
+                    </div>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -66,14 +194,14 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
 
 function CommentForm({ copy, pending, onSubmit }) {
   const [body, setBody] = useState("");
-  const [sent, setSent] = useState(false);
+  const [notice, setNotice] = useState("");
 
   async function submit(event) {
     event.preventDefault();
-    const ok = await onSubmit(body);
-    if (ok) {
+    const result = await onSubmit(body);
+    if (result) {
       setBody("");
-      setSent(true);
+      setNotice(result.status === "pending" ? copy.commentHeld : copy.commentSent);
     }
   }
 
@@ -89,11 +217,11 @@ function CommentForm({ copy, pending, onSubmit }) {
           placeholder={copy.commentPlaceholder}
           onChange={(event) => {
             setBody(event.target.value);
-            setSent(false);
+            setNotice("");
           }}
         />
       </label>
-      {sent ? <p className="account-saved">{copy.commentSent}</p> : null}
+      {notice ? <p className="account-saved">{notice}</p> : null}
       <button type="submit" className="button button-secondary" disabled={pending}>
         {copy.commentSubmit}
       </button>
@@ -138,9 +266,10 @@ export default function NiaChat({ text, user, language, onOpen }) {
     setPending(true);
     try {
       const story = await requestAuth("/api/chat/stories", { body });
-      setMine((list) => [story, ...list]);
+      if (story.status === "allowed") setStories((list) => [story, ...list]);
+      else setMine((list) => [story, ...list]);
       setBody("");
-      setSaved(true);
+      setSaved(story.status === "pending" ? "held" : "posted");
     } catch (caught) {
       setErrorCode(caught.code || "request_failed");
     } finally {
@@ -171,10 +300,81 @@ export default function NiaChat({ text, user, language, onOpen }) {
       const attach = (story) => (story.id === id ? { ...story, comments: [...(story.comments || []), comment] } : story);
       setStories((list) => list.map(attach));
       setMine((list) => list.map(attach));
-      return true;
+      return comment;
     } catch (caught) {
       setErrorCode(caught.code || "request_failed");
       return false;
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function applyReport(list, storyId, commentId, status) {
+    return list.flatMap((story) => {
+      if (story.id !== storyId) return [story];
+      if (!commentId) {
+        if (status !== "allowed") return [];
+        return [{ ...story, reported: true }];
+      }
+      const comments = (story.comments || []).flatMap((comment) => {
+        if (comment.id !== commentId) return [comment];
+        if (status !== "allowed") return [];
+        return [{ ...comment, reported: true }];
+      });
+      return [{ ...story, comments }];
+    });
+  }
+
+  async function reportStory(id) {
+    setErrorCode("");
+    setPending(true);
+    try {
+      const data = await requestAuth(`/api/chat/stories/${id}/report`, {});
+      setStories((list) => applyReport(list, id, null, data.status));
+      setConfirmId(null);
+    } catch (caught) {
+      setErrorCode(caught.code || "request_failed");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function reportComment(storyId, commentId) {
+    setErrorCode("");
+    setPending(true);
+    try {
+      const data = await requestAuth(`/api/chat/comments/${commentId}/report`, {});
+      const mark = (list) => applyReport(list, storyId, commentId, data.status);
+      setStories(mark);
+      setMine(mark);
+      setConfirmId(null);
+    } catch (caught) {
+      setErrorCode(caught.code || "request_failed");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function reactTo(kind, storyId, commentId, emoji) {
+    setErrorCode("");
+    setPending(true);
+    try {
+      const path = kind === "story" ? `/api/chat/stories/${storyId}/react` : `/api/chat/comments/${commentId}/react`;
+      const data = await requestAuth(path, { emoji });
+      const apply = (list) => list.map((story) => {
+        if (story.id !== storyId) return story;
+        if (kind === "story") return { ...story, reactions: data.reactions };
+        return {
+          ...story,
+          comments: (story.comments || []).map((comment) => (
+            comment.id === commentId ? { ...comment, reactions: data.reactions } : comment
+          )),
+        };
+      });
+      setStories(apply);
+      setMine(apply);
+    } catch (caught) {
+      setErrorCode(caught.code || "request_failed");
     } finally {
       setPending(false);
     }
@@ -234,7 +434,8 @@ export default function NiaChat({ text, user, language, onOpen }) {
                   {error}
                 </p>
               ) : null}
-              {saved ? <p className="account-saved">{copy.submitted}</p> : null}
+              {saved === "posted" ? <p className="account-saved">{copy.submitted}</p> : null}
+              {saved === "held" ? <p className="account-saved">{copy.submittedHeld}</p> : null}
               <button type="submit" className="button button-accent" disabled={pending}>
                 {pending ? copy.submitting : copy.submit}
               </button>
@@ -251,6 +452,10 @@ export default function NiaChat({ text, user, language, onOpen }) {
                   setConfirmId={setConfirmId}
                   onDelete={removeStory}
                   onComment={addComment}
+                  onReport={reportStory}
+                  onReportComment={reportComment}
+                  onReact={(id, emoji) => reactTo("story", id, null, emoji)}
+                  onReactComment={(storyId, commentId, emoji) => reactTo("comment", storyId, commentId, emoji)}
                 />
               </section>
             ) : null}
@@ -264,6 +469,10 @@ export default function NiaChat({ text, user, language, onOpen }) {
                 setConfirmId={setConfirmId}
                 onDelete={removeStory}
                 onComment={addComment}
+                onReport={reportStory}
+                onReportComment={reportComment}
+                onReact={(id, emoji) => reactTo("story", id, null, emoji)}
+                onReactComment={(storyId, commentId, emoji) => reactTo("comment", storyId, commentId, emoji)}
               />
             ) : (
               <p className="record-empty">{copy.empty}</p>

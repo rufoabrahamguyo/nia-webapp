@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const recordSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
-    body: { type: String, required: true, maxlength: 20000 },
+    sealed: { type: String, required: true, maxlength: 90000 },
     edited: { type: Boolean, default: false },
   },
   { timestamps: true },

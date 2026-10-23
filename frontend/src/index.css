@@ -179,12 +179,15 @@ a:focus-visible {
   order: 0;
   width: 36px;
   height: 36px;
+  overflow: hidden;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--white);
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
+  background: transparent;
+}
+
+.account-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .account-chevron {
@@ -1274,6 +1277,145 @@ h1 {
   margin-top: 10px;
 }
 
+.record-passcode {
+  max-width: 40rem;
+  margin: 0 0 28px;
+}
+
+.record-passcode .fine,
+.record-passcode .account-saved {
+  margin-top: 8px;
+}
+
+.passcode-pad {
+  max-width: 22rem;
+  margin: 8px 0 36px;
+  padding: 32px 20px 24px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #d5ebf8 0%, #eef6fb 70%);
+  text-align: center;
+}
+
+.passcode-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.passcode-hint {
+  margin: 8px auto 0;
+  max-width: 16rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.passcode-dots {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 22px 0 8px;
+}
+
+.passcode-dots.is-wrong {
+  animation: passcode-shake 0.4s ease;
+}
+
+.passcode-dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.passcode-dot.is-filled {
+  background: var(--ink);
+}
+
+.passcode-error {
+  margin: 8px 0 0;
+}
+
+.passcode-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  gap: 14px;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.passcode-key {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.passcode-key:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.passcode-key:active {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.passcode-key:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.passcode-key-quiet {
+  border-color: transparent;
+  font-size: 1rem;
+}
+
+.passcode-backspace {
+  width: 28px;
+  height: 28px;
+}
+
+.passcode-spacer {
+  width: 72px;
+  height: 72px;
+}
+
+.passcode-cancel {
+  margin-top: 18px;
+}
+
+.passcode-ask {
+  margin: 18px auto 0;
+  max-width: 16rem;
+}
+
+.passcode-ask .record-actions {
+  justify-content: center;
+}
+
+@keyframes passcode-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
 .urgent {
   max-width: 40rem;
   margin-bottom: 36px;
@@ -1897,11 +2039,13 @@ h1 {
 }
 
 .auth-form h1 {
+  max-width: none;
   margin: 0;
   font-family: var(--font-serif);
   font-size: clamp(2.2rem, 4vw, 3rem);
   font-weight: 700;
   line-height: 1.1;
+  text-wrap: balance;
 }
 
 .auth-line {
@@ -1926,6 +2070,39 @@ h1 {
   color: var(--ink);
   font: inherit;
   font-weight: 400;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 48px;
+}
+
+.password-eye {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.password-eye:hover {
+  background: rgba(27, 42, 74, 0.06);
+}
+
+.password-eye-icon {
+  width: 22px;
+  height: 22px;
 }
 
 .auth-choice {
@@ -2020,6 +2197,57 @@ h1 {
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.account-actions .button {
+  margin-top: 0;
+}
+
+.button-icon {
+  gap: 8px;
+}
+
+.button-icon svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.button-small.button-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.button-small {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 0.95rem;
+}
+
+.account-danger {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.account-danger h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.account-danger > p,
+.account-danger form > p {
+  margin-top: 8px;
 }
 
 .account-facts {
@@ -2150,7 +2378,125 @@ h1 {
 .chat-story .record-when {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px 14px;
+}
+
+.chat-face {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.chat-face svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chat-react {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chat-emoji,
+.chat-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.chat-emoji {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  background: #f4f7fb;
+  color: var(--ink);
+}
+
+.chat-emoji[aria-pressed="true"] {
+  border-color: var(--green);
+  background: var(--card);
+}
+
+.chat-flag {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.chat-flag svg {
+  width: 18px;
+  height: 18px;
+}
+
+.chat-flag.is-reported,
+.chat-flag[aria-pressed="true"] {
+  color: var(--help);
+}
+
+.chat-report-ask {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.avatar-picker {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.avatar-picker legend {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.avatar-option {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.avatar-option svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-option[aria-pressed="true"] {
+  border-color: var(--green);
 }
 
 .chat-status {
@@ -2184,8 +2530,21 @@ h1 {
   box-sizing: border-box;
 }
 
-.admin-login {
-  max-width: 36rem;
+.admin-gate {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.admin-gate > main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.admin-gate .auth-split {
+  flex: 1;
+  min-height: 0;
 }
 
 .admin-shell-app {

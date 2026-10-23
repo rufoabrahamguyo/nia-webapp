@@ -6,7 +6,11 @@ const commentSchema = new mongoose.Schema(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     authorName: { type: String, required: true, maxlength: 40 },
     body: { type: String, required: true, maxlength: 1000 },
-    status: { type: String, required: true, enum: ["pending", "allowed", "hidden"], default: "pending" },
+    status: { type: String, required: true, enum: ["pending", "allowed", "hidden"], default: "allowed" },
+    holdReason: { type: String, enum: ["", "contact", "blocked_word", "reports"], default: "" },
+    reportCount: { type: Number, default: 0 },
+    reviewedReportCount: { type: Number, default: 0 },
+    needsReview: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
