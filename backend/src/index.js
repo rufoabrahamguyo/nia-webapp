@@ -16,6 +16,7 @@ import adminRoutes from "./routes/admin.js";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chat.js";
 import helplineRoutes from "./routes/helplines.js";
+import nearbyRoutes from "./routes/nearby.js";
 import pageRoutes from "./routes/pages.js";
 import recordRoutes from "./routes/records.js";
 
@@ -61,6 +62,17 @@ app.use(
 );
 app.use("/api/records", recordRoutes);
 app.use("/api/helplines", helplineRoutes);
+app.use(
+  "/api/nearby",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "request_failed" },
+  }),
+);
+app.use("/api/nearby", nearbyRoutes);
 app.use("/api/pages", pageRoutes);
 app.use(
   "/api/chat",

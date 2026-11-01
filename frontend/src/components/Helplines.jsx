@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { linesFor } from "../helplines.js";
+import NearbyPlaces from "./NearbyPlaces.jsx";
 
 function fromDirectory(language, group) {
   return linesFor(language, group).map((line) => ({ ...line, hours: "", free: null }));
@@ -104,6 +105,8 @@ export default function Helplines({ language, text }) {
             {text.urgent.call}
           </a>
         </section>
+
+        <NearbyPlaces text={text} />
 
         <h2 className="group-label">{text.callNow}</h2>
         <div className="line-list">
