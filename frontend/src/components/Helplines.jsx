@@ -92,6 +92,8 @@ export default function Helplines({ language, text }) {
       </header>
 
       <div className="page-band">
+        <NearbyPlaces text={text} />
+
         <section className="urgent" id="just-happened" aria-labelledby="urgent-title">
           <h2 id="urgent-title">{text.urgent.title}</h2>
           <p>{text.urgent.lede}</p>
@@ -105,8 +107,6 @@ export default function Helplines({ language, text }) {
             {text.urgent.call}
           </a>
         </section>
-
-        <NearbyPlaces text={text} />
 
         <h2 className="group-label">{text.callNow}</h2>
         <div className="line-list">

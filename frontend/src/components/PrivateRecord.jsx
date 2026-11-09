@@ -20,13 +20,95 @@ function downloadNotes(records, copy, language) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+function localeOf(language) {
+  return language === "sw" ? "sw-KE" : "en-KE";
+}
+
 function formatWhen(value, language) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat(language === "sw" ? "sw-KE" : "en-KE", {
+  return new Intl.DateTimeFormat(localeOf(language), {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
+}
+
+function startOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function noteParts(body) {
+  const text = String(body || "").replace(/\r\n/g, "\n").trim();
+  if (!text) return { title: "", rest: "" };
+  const firstBreak = text.indexOf("\n");
+  const first = (firstBreak === -1 ? text : text.slice(0, firstBreak)).trim();
+  const rest = firstBreak === -1 ? "" : text.slice(firstBreak + 1).trim();
+  if (first.length > 72) return { title: `${first.slice(0, 72).trim()}…`, rest: text };
+  return { title: first, rest };
+}
+
+function shortDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${day}/${month}/${date.getFullYear()}`;
+}
+
+function longDate(value, language) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat(localeOf(language), {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function monthDay(value, language) {
+  return new Intl.DateTimeFormat(localeOf(language), { day: "numeric", month: "long" }).format(value);
+}
+
+function monthTitle(value, language) {
+  return new Intl.DateTimeFormat(localeOf(language), { month: "long", year: "numeric" }).format(value);
+}
+
+function weekdayLabels(language) {
+  const format = new Intl.DateTimeFormat(localeOf(language), { weekday: "narrow" });
+  return Array.from({ length: 7 }, (_, index) => format.format(new Date(2024, 0, 7 + index)));
+}
+
+function monthCells(monthDate) {
+  const year = monthDate.getFullYear();
+  const monthIndex = monthDate.getMonth();
+  const startPad = new Date(year, monthIndex, 1).getDay();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const cells = [];
+  for (let index = 0; index < startPad; index += 1) {
+    cells.push({ day: new Date(year, monthIndex, 1 - (startPad - index)), outside: true });
+  }
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push({ day: new Date(year, monthIndex, day), outside: false });
+  }
+  while (cells.length % 7 !== 0) {
+    const last = cells[cells.length - 1].day;
+    cells.push({ day: new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1), outside: true });
+  }
+  return cells;
+}
+
+function CalendarGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M8 3.5v3M16 3.5v3M4 10h16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 function unlockHeaders(token) {
@@ -51,6 +133,12 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
   const [draft, setDraft] = useState("");
   const [nextCode, setNextCode] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const [pane, setPane] = useState("calendar");
+  const [month, setMonth] = useState(() => startOfMonth(new Date()));
+  const [selectedDay, setSelectedDay] = useState(() => new Date());
+  const [selectedId, setSelectedId] = useState(null);
+  const [showAll, setShowAll] = useState(false);
+  const [passcodeOpen, setPasscodeOpen] = useState(false);
   const error = errorCode ? copy.errors[errorCode] || copy.errors.request_failed : "";
 
   useEffect(() => {
@@ -88,13 +176,32 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (selectedId && records.some((record) => record.id === selectedId)) return;
+    const newest = records[0];
+    if (!newest?.id) return;
+    const when = new Date(newest.updatedAt);
+    setSelectedId(newest.id);
+    if (Number.isNaN(when.getTime())) return;
+    setSelectedDay(when);
+    setMonth(startOfMonth(when));
+  }, [records, selectedId]);
+
+  useEffect(() => {
+    if (pane !== "write" || gate !== "open") return;
+    fieldRef.current?.focus({ preventScroll: true });
+  }, [pane, editingId, gate]);
+
   if (!user) {
     return (
-      <div className="record-gate">
-        <p>{copy.signIn}</p>
-        <button type="button" className="button button-accent" onClick={() => onOpen("login")}>
-          {text.logIn}
-        </button>
+      <div className="diary diary-solo">
+        <section className="diary-card diary-solo-card">
+          <h2 className="diary-kicker">{copy.diary}</h2>
+          <p className="diary-empty-copy">{copy.signIn}</p>
+          <button type="button" className="diary-submit" onClick={() => onOpen("login")}>
+            {text.logIn}
+          </button>
+        </section>
       </div>
     );
   }
@@ -221,7 +328,57 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
     setSaved(false);
     setConfirmId(null);
     setErrorCode("");
-    fieldRef.current?.focus();
+    setPasscodeOpen(false);
+    setPane("write");
+  }
+
+  function focusDay(day, openNote) {
+    setSelectedDay(day);
+    setMonth(startOfMonth(day));
+    if (!openNote) return;
+    const matches = records.filter((record) => sameDay(new Date(record.updatedAt), day));
+    if (!matches[0]) return;
+    setSelectedId(matches[0].id);
+    setConfirmId(null);
+    setSaved(false);
+    setPane("entry");
+  }
+
+  function openRecord(record) {
+    const when = new Date(record.updatedAt);
+    setSelectedId(record.id);
+    setConfirmId(null);
+    setSaved(false);
+    if (!Number.isNaN(when.getTime())) {
+      setSelectedDay(when);
+      setMonth(startOfMonth(when));
+    }
+    setPane("entry");
+  }
+
+  function openWrite() {
+    setEditingId(null);
+    setBody("");
+    setSaved(false);
+    setErrorCode("");
+    setPasscodeOpen(false);
+    setPane("write");
+  }
+
+  function closeWrite() {
+    setEditingId(null);
+    setBody("");
+    setSaved(false);
+    setErrorCode("");
+    setPasscodeOpen(false);
+    setPane(selectedId ? "entry" : "calendar");
+  }
+
+  function openPasscode(nextGate) {
+    setErrorCode("");
+    setNotice("");
+    setPasscodeOpen(false);
+    setGate(nextGate);
   }
 
   function cancelEdit() {
@@ -245,6 +402,14 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
       setEditingId(null);
       setBody("");
       setSaved(true);
+      setSelectedId(next.id);
+      const when = new Date(next.updatedAt);
+      if (!Number.isNaN(when.getTime())) {
+        setSelectedDay(when);
+        setMonth(startOfMonth(when));
+      }
+      setPasscodeOpen(false);
+      setPane("entry");
     } catch (caught) {
       fail(caught);
     } finally {
@@ -259,6 +424,7 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
       await requestAuth(`/api/records/${id}`, null, "DELETE", unlockHeaders(token));
       setRecords((list) => list.filter((item) => item.id !== id));
       if (editingId === id) cancelEdit();
+      if (selectedId === id) setSelectedId(null);
       setConfirmId(null);
     } catch (caught) {
       fail(caught);
@@ -322,127 +488,237 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
     );
   }
 
+  const selected = records.find((record) => record.id === selectedId) || null;
+  const selectedParts = selected ? noteParts(selected.body) : null;
+  const recent = showAll ? records : records.slice(0, 2);
+  const notedDays = new Set(
+    records.map((record) => {
+      const when = new Date(record.updatedAt);
+      return Number.isNaN(when.getTime()) ? "" : `${when.getFullYear()}-${when.getMonth()}-${when.getDate()}`;
+    }),
+  );
+  const today = new Date();
+
   return (
-    <div className="record-writer">
-      <div className="record-passcode">
-        {hasPasscode ? (
-          <div className="record-actions">
-            <button type="button" className="button button-secondary button-icon" onClick={() => { setErrorCode(""); setNotice(""); setGate("current"); }}>
-              <ButtonIcon name="key" />
-              {copy.changePasscode}
-            </button>
-            <button type="button" className="button button-secondary button-icon" onClick={() => { setErrorCode(""); setNotice(""); setGate("remove"); }}>
-              <ButtonIcon name="unlock" />
-              {copy.removePasscode}
+    <div className="diary" data-pane={pane}>
+      {error ? (
+        <p className="auth-error diary-tray-error" role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      <section className="diary-card diary-calendar" aria-labelledby="diary-calendar-title">
+        <h2 id="diary-calendar-title" className="diary-kicker diary-kicker-solo">{copy.calendar}</h2>
+        <button type="button" className="diary-today" onClick={() => focusDay(new Date(), false)}>
+          {copy.today}: {monthDay(today, language)}
+        </button>
+        <div className="diary-month">
+          <button type="button" className="diary-icon" onClick={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))} aria-label={copy.prevMonth}>
+            ‹
+          </button>
+          <span>{monthTitle(month, language)}</span>
+          <button type="button" className="diary-icon" onClick={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))} aria-label={copy.nextMonth}>
+            ›
+          </button>
+        </div>
+        <div className="diary-grid">
+          {weekdayLabels(language).map((label, index) => (
+            <span className="diary-dow" key={`${label}-${index}`}>{label}</span>
+          ))}
+          {monthCells(month).map(({ day, outside }) => {
+            const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+            const selectedDayMatch = sameDay(day, selectedDay);
+            return (
+              <button
+                type="button"
+                key={key}
+                className={`diary-day${outside ? " is-out" : ""}${selectedDayMatch ? " is-selected" : ""}${sameDay(day, today) ? " is-today" : ""}${notedDays.has(key) ? " has-note" : ""}`}
+                aria-pressed={selectedDayMatch}
+                aria-label={longDate(day, language)}
+                onClick={() => focusDay(day, true)}
+              >
+                {day.getDate()}
+              </button>
+            );
+          })}
+        </div>
+        <div className="diary-recent">
+          <div className="diary-recent-head">
+            <h3>{copy.recent}</h3>
+            {records.length > 2 ? (
+              <button type="button" className="diary-see" onClick={() => setShowAll((value) => !value)}>
+                {showAll ? copy.seeLess : copy.seeAll}
+              </button>
+            ) : null}
+          </div>
+          {recent.length > 0 ? (
+            <ul className="diary-recent-list">
+              {recent.map((record) => (
+                <li key={record.id}>
+                  <button
+                    type="button"
+                    className={`diary-recent-card${record.id === selectedId ? " is-selected" : ""}`}
+                    onClick={() => openRecord(record)}
+                  >
+                    <span className="diary-recent-date">{shortDate(record.updatedAt)}</span>
+                    <span className="diary-recent-title">{noteParts(record.body).title}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="diary-quiet-copy">{loading ? "" : copy.empty}</p>
+          )}
+        </div>
+        <nav className="diary-dock" aria-label={copy.calendar}>
+          <button type="button" className="diary-dock-btn is-on" aria-current="page">
+            <CalendarGlyph />
+            {copy.calendar}
+          </button>
+          <button type="button" className="diary-dock-btn" onClick={openWrite}>
+            <ButtonIcon name="pencil" />
+            {copy.write}
+          </button>
+        </nav>
+      </section>
+
+      <section className="diary-card diary-entry" aria-labelledby="diary-entry-title">
+        <header className="diary-top">
+          <div className="diary-back-slot">
+            <button type="button" className="diary-icon diary-back" onClick={() => setPane("calendar")} aria-label={copy.back}>
+              <ButtonIcon name="back" />
             </button>
           </div>
+          <h2 id="diary-entry-title" className="diary-kicker">{copy.diary}</h2>
+          <div className="diary-top-end">
+            <button type="button" className="diary-text diary-only-narrow" onClick={openWrite}>{copy.write}</button>
+          </div>
+        </header>
+        {selected && selectedParts ? (
+          <div className="diary-entry-main">
+            <p className="diary-when">{longDate(selected.updatedAt, language)}</p>
+            <h3 className="diary-title">{selectedParts.title}</h3>
+            {selected.edited ? <span className="diary-edited">{copy.edited}</span> : null}
+            {selectedParts.rest ? <p className="diary-body">{selectedParts.rest}</p> : null}
+            {saved ? (
+              <p className="account-saved diary-saved" role="status">
+                {copy.saved}
+              </p>
+            ) : null}
+          </div>
         ) : (
-          <button type="button" className="button button-secondary button-icon" onClick={() => { setErrorCode(""); setNotice(""); setGate("choose"); }}>
-            <ButtonIcon name="lock" />
-            {copy.addPasscode}
-          </button>
+          <div className="diary-empty">
+            <p>{loading ? "" : copy.empty}</p>
+            <button type="button" className="diary-submit diary-only-narrow" onClick={openWrite}>{copy.write}</button>
+          </div>
         )}
-        <p className="fine">{copy.passcodeOptional}</p>
+        {selected ? (
+          <div className="diary-entry-tools">
+            <button type="button" className="diary-icon" onClick={() => startEdit(selected)} aria-label={copy.edit}>
+              <ButtonIcon name="pencil" />
+            </button>
+            {confirmId === selected.id ? (
+              <div className="diary-confirm">
+                <p>{copy.deleteAsk}</p>
+                <button type="button" className="diary-danger" onClick={() => remove(selected.id)} disabled={pending}>
+                  {copy.remove}
+                </button>
+                <button type="button" className="diary-quiet" onClick={() => setConfirmId(null)}>
+                  {copy.cancel}
+                </button>
+              </div>
+            ) : (
+              <button type="button" className="diary-icon" onClick={() => setConfirmId(selected.id)} aria-label={copy.remove}>
+                <ButtonIcon name="trash" />
+              </button>
+            )}
+            <button type="button" className="diary-quiet" onClick={() => downloadNotes(records, copy, language)}>
+              <ButtonIcon name="download" />
+              {copy.download}
+            </button>
+            <p className="fine diary-download-note">{copy.downloadNote}</p>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="diary-card diary-write" aria-labelledby="diary-write-title">
+        <header className="diary-top">
+          <div className="diary-back-slot" />
+          <h2 id="diary-write-title" className="diary-kicker">{editingId ? copy.editTitle : copy.write}</h2>
+          <div className="diary-top-actions">
+            <button
+              type="button"
+              className="diary-icon"
+              aria-expanded={passcodeOpen}
+              aria-label={hasPasscode ? copy.changePasscode : copy.addPasscode}
+              onClick={() => setPasscodeOpen((open) => !open)}
+            >
+              <ButtonIcon name={hasPasscode ? "key" : "lock"} />
+            </button>
+            <button type="button" className="diary-icon" onClick={closeWrite} aria-label={copy.close}>
+              <ButtonIcon name="close" />
+            </button>
+          </div>
+        </header>
+        {passcodeOpen ? (
+          <div className="diary-passcode" role="group" aria-label={copy.passcodeMenu}>
+            {hasPasscode ? (
+              <>
+                <button type="button" className="diary-menu-item" onClick={() => openPasscode("current")}>
+                  {copy.changePasscode}
+                </button>
+                <button type="button" className="diary-menu-item" onClick={() => openPasscode("remove")}>
+                  {copy.removePasscode}
+                </button>
+              </>
+            ) : (
+              <button type="button" className="diary-menu-item" onClick={() => openPasscode("choose")}>
+                {copy.addPasscode}
+              </button>
+            )}
+            <p className="fine">{copy.passcodeOptional}</p>
+          </div>
+        ) : null}
         {notice === "saved" ? (
-          <p className="account-saved" role="status">
+          <p className="account-saved diary-saved" role="status">
             {copy.passcodeSaved}
           </p>
         ) : null}
         {notice === "removed" ? (
-          <p className="account-saved" role="status">
+          <p className="account-saved diary-saved" role="status">
             {copy.passcodeRemoved}
           </p>
         ) : null}
-      </div>
-      <form onSubmit={onSubmit}>
-        <label className="auth-field record-field">
-          <span>{editingId ? copy.editTitle : copy.title}</span>
-          <textarea
-            ref={fieldRef}
-            name="record"
-            required
-            maxLength={20000}
-            rows={8}
-            value={body}
-            placeholder={copy.placeholder}
-            onChange={(event) => {
-              setBody(event.target.value);
-              setSaved(false);
-            }}
-          />
-        </label>
-        <p className="fine record-hint">{editingId ? copy.editHint : copy.hint}</p>
-        {error ? (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-        {saved ? (
-          <p className="account-saved" role="status">
-            {copy.saved}
-          </p>
-        ) : null}
-        <div className="record-actions">
-          <button type="submit" className="button button-accent" disabled={pending}>
-            {pending ? copy.saving : editingId ? copy.update : copy.save}
-          </button>
-          {editingId ? (
-            <button type="button" className="button button-secondary button-icon" onClick={cancelEdit} disabled={pending}>
-              <ButtonIcon name="close" />
-              {copy.cancel}
+        <form onSubmit={onSubmit}>
+          <label className="diary-field">
+            <span>{editingId ? copy.editTitle : copy.title}</span>
+            <textarea
+              ref={fieldRef}
+              name="record"
+              required
+              maxLength={20000}
+              value={body}
+              placeholder={copy.placeholder}
+              autoComplete="off"
+              onChange={(event) => {
+                setBody(event.target.value);
+                setSaved(false);
+              }}
+            />
+          </label>
+          <p className="diary-hint">{editingId ? copy.editHint : copy.hint}</p>
+          <div className="diary-form-foot">
+            {editingId ? (
+              <button type="button" className="diary-quiet" onClick={closeWrite} disabled={pending}>
+                {copy.cancel}
+              </button>
+            ) : null}
+            <button type="submit" className="diary-submit" disabled={pending}>
+              {pending ? copy.saving : editingId ? copy.update : copy.save}
             </button>
-          ) : null}
-        </div>
-      </form>
-
-      {records.length > 0 ? (
-        <div className="record-export">
-          <button type="button" className="button button-secondary button-icon" onClick={() => downloadNotes(records, copy, language)}>
-            <ButtonIcon name="download" />
-            {copy.download}
-          </button>
-          <p className="fine">{copy.downloadNote}</p>
-        </div>
-      ) : null}
-
-      {records.length > 0 ? (
-        <ul className="record-list">
-          {records.map((record) => (
-            <li className="story-card" key={record.id}>
-              <p className="record-when">
-                {formatWhen(record.updatedAt, language)}
-                {record.edited ? <span className="record-edited">{copy.edited}</span> : null}
-              </p>
-              <p className="record-body">{record.body}</p>
-              <div className="record-actions">
-                <button type="button" className="button button-secondary button-small button-icon" onClick={() => startEdit(record)}>
-                  <ButtonIcon name="pencil" />
-                  {copy.edit}
-                </button>
-                {confirmId === record.id ? (
-                  <>
-                    <span>{copy.deleteAsk}</span>
-                    <button type="button" className="button button-help button-small button-icon" onClick={() => remove(record.id)} disabled={pending}>
-                      <ButtonIcon name="trash" />
-                      {copy.remove}
-                    </button>
-                    <button type="button" className="button button-secondary button-small button-icon" onClick={() => setConfirmId(null)}>
-                      <ButtonIcon name="close" />
-                      {copy.cancel}
-                    </button>
-                  </>
-                ) : (
-                  <button type="button" className="button button-secondary button-small button-icon" onClick={() => setConfirmId(record.id)}>
-                    <ButtonIcon name="trash" />
-                    {copy.remove}
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      {!loading && !errorCode && records.length === 0 ? <p className="record-empty">{copy.empty}</p> : null}
+          </div>
+        </form>
+      </section>
     </div>
   );
 }

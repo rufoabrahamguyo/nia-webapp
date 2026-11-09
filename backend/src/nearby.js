@@ -1,5 +1,7 @@
 const NOMINATIM = "https://nominatim.openstreetmap.org/search";
 const RADII = [4000, 15000, 50000, 120000];
+const CARE_LIMIT = 6;
+const POLICE_LIMIT = 5;
 
 let lastRequestAt = 0;
 
@@ -47,6 +49,8 @@ function toPlace(place, fromLat, fromLon, kind) {
   return {
     name: place.name,
     kind,
+    lat: Number(lat.toFixed(6)),
+    lon: Number(lon.toFixed(6)),
     distanceMeters: distanceMeters(fromLat, fromLon, lat, lon),
     address: addressOf(place.address),
     phone: phoneOf(place),
@@ -81,21 +85,31 @@ async function searchAmenity(lat, lon, amenity, radiusMeters) {
   return places;
 }
 
-async function closest(lat, lon, amenity) {
+function placeKey(raw, place) {
+  if (raw.osm_type && raw.osm_id) return `${raw.osm_type}:${raw.osm_id}`;
+  return `${place.name.toLowerCase()}:${place.lat.toFixed(4)}:${place.lon.toFixed(4)}`;
+}
+
+async function nearbyList(lat, lon, amenity, limit) {
+  const seen = new Map();
   for (const radius of RADII) {
     const places = await searchAmenity(lat, lon, amenity, radius);
-    let best = null;
     for (const place of places) {
       const next = toPlace(place, lat, lon, amenity);
-      if (next && (!best || next.distanceMeters < best.distanceMeters)) best = next;
+      if (!next || next.distanceMeters > radius) continue;
+      const key = placeKey(place, next);
+      const prev = seen.get(key);
+      if (!prev || next.distanceMeters < prev.distanceMeters) seen.set(key, next);
     }
-    if (best) return best;
+    const list = [...seen.values()].sort((a, b) => a.distanceMeters - b.distanceMeters);
+    if (list.length >= limit || (list.length > 0 && radius >= 15000)) return list.slice(0, limit);
   }
-  return null;
+  return [...seen.values()].sort((a, b) => a.distanceMeters - b.distanceMeters).slice(0, limit);
 }
 
 export async function nearestPlaces(lat, lon) {
-  const hospital = (await closest(lat, lon, "hospital")) || (await closest(lat, lon, "clinic"));
-  const police = await closest(lat, lon, "police");
-  return { hospital, police };
+  const hospitals = await nearbyList(lat, lon, "hospital", CARE_LIMIT);
+  const care = hospitals.length > 0 ? hospitals : await nearbyList(lat, lon, "clinic", CARE_LIMIT);
+  const police = await nearbyList(lat, lon, "police", POLICE_LIMIT);
+  return { hospitals: care, police };
 }

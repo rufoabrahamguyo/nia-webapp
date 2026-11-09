@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { requestAuth } from "../auth.js";
 import { AnimalFace } from "../avatars.jsx";
 
@@ -6,7 +7,7 @@ const REACTIONS = [
   { id: "care", glyph: "💛" },
   { id: "thanks", glyph: "🙏" },
   { id: "strength", glyph: "💪" },
-  { id: "hope", glyph: "🌱" },
+  { id: "hope", glyph: "👏" },
 ];
 
 function FlagIcon({ filled }) {
@@ -20,30 +21,65 @@ function FlagIcon({ filled }) {
 
 function ReportFlag({ id, reported, copy, pending, confirmId, setConfirmId, onReport }) {
   const open = confirmId === id;
+  const titleId = useId();
+  const flagRef = useRef(null);
+  const cancelRef = useRef(null);
+  const hint = reported ? copy.reported : copy.reportHint;
+
+  useEffect(() => {
+    if (!open) return;
+    cancelRef.current?.focus();
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      setConfirmId(null);
+      flagRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, setConfirmId]);
+
+  function close() {
+    setConfirmId(null);
+    flagRef.current?.focus();
+  }
+
   return (
-    <>
+    <span className="chat-flag-wrap">
       <button
+        ref={flagRef}
         type="button"
         className={reported ? "chat-flag is-reported" : "chat-flag"}
-        aria-label={reported ? copy.reported : copy.report}
-        aria-pressed={reported || open}
+        aria-label={hint}
+        title={hint}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-pressed={reported}
         disabled={pending || reported}
-        onClick={() => setConfirmId(open ? null : id)}
+        onClick={() => setConfirmId(id)}
       >
-        <FlagIcon filled={reported || open} />
+        <FlagIcon filled={reported} />
       </button>
-      {open ? (
-        <span className="chat-report-ask">
-          <span>{copy.reportAsk}</span>
-          <button type="button" className="chat-flag is-reported" aria-label={copy.report} onClick={onReport} disabled={pending}>
-            <FlagIcon filled />
-          </button>
-          <button type="button" className="next-link" onClick={() => setConfirmId(null)}>
-            {copy.cancel}
-          </button>
-        </span>
-      ) : null}
-    </>
+      <span className="chat-flag-tip" aria-hidden="true">{hint}</span>
+      {open
+        ? createPortal(
+            <div className="logout-layer">
+              <button type="button" className="logout-backdrop" aria-label={copy.cancel} onClick={close} />
+              <div className="logout-dialog chat-report-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+                <h2 id={titleId}>{copy.reportAsk}</h2>
+                <div className="logout-actions">
+                  <button type="button" className="button button-accent" onClick={onReport} disabled={pending}>
+                    {copy.report}
+                  </button>
+                  <button ref={cancelRef} type="button" className="button button-secondary" onClick={close}>
+                    {copy.cancel}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+    </span>
   );
 }
 
