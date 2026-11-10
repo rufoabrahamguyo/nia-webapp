@@ -356,40 +356,65 @@ const copy = {
       },
     },
     consent: {
-      title: "Terms and conditions",
-      lede: "Please read this before you continue. Nia is not an emergency service.",
+      title: "Privacy and consent",
+      lede: "Please read this before you continue. Nia is not an emergency service. Version 1.0, November 2026.",
       sections: [
         {
           title: "What Nia is",
-          body: "Nia shares information and a place to write. Nia is not the police, a hospital, a counsellor, or an emergency service. Nia does not watch NiaChat in order to send help.",
+          body: "Nia gives information, helplines, and a private place to write. Nia is not the police, a hospital, a counsellor, or an emergency service. The Rights page explains the law in plain language. It is not legal advice. If you are in danger, or you may hurt yourself or someone else, call 999 or 112. For support after sexual and gender-based violence, call 1195. Writing in NiaChat does not send help.",
         },
         {
-          title: "If you or someone else may be hurt",
-          body: "If you are in danger, or you may hurt yourself or someone else, call 999 or 112 now. For support, call 1195. Writing it on NiaChat is not a call for help that Nia will answer.",
+          title: "Your age",
+          body: "You confirm that you are 18 or older.",
         },
         {
-          title: "What a message does not do",
-          body: "If you write that you may harm yourself or someone else, Nia does not have to find you, contact you, or send help. Nia may not see that message in time. A word held for an administrator to check is not emergency help.",
+          title: "What Nia keeps",
+          body: "Nia keeps your email address, username, avatar, private notes, NiaChat posts, comments, reactions, and reports, messages you send through Report a problem, and the date and time of those actions. This runs your account, shows your posts under your username, and lets staff moderate. Nia does not ask for your real name. If you continue with Google, Nia keeps the email Google confirms and a Google account id. It does not keep your Google profile name. Your notes passcode is stored only as a hash.",
         },
         {
-          title: "What you accept",
-          body: "You understand that Nia and the people who run it do not provide emergency help. You will not hold them responsible for harm that follows something written on NiaChat. You can still call 999, 112, or 1195 at any time.",
+          title: "Private notes",
+          body: "A note is encrypted before it is saved. On the site, only you can open your notes, after your passcode. The encryption key is kept on the server. This protection holds while that server stays secure.",
         },
         {
-          title: "Your name",
-          body: "Nia does not ask for your real name. Do not write your real name, a phone number, or a workplace in NiaChat.",
+          title: "NiaChat",
+          body: "Posts and comments appear under your username. They are encrypted in the database, and administrators can open them. A post or comment with a phone number, an email address, or a blocked word is held until an administrator allows it or hides it. Other people can report a post or comment. Enough reports hide it for review. Administrators can read posts, hide them, and reply. You can delete your own post. Do not post your real name, or anything that identifies you or anyone else.",
         },
         {
-          title: "What is saved",
-          body: "The date you agree is saved on your account. It shows that you read this version. If you delete your account, that record is deleted with it. You agree to this version before you can write in NiaChat.",
+          title: "Community rules",
+          body: "Be respectful. Do not harass, threaten, or name anyone. Do not share someone else’s story unless they have agreed.",
+        },
+        {
+          title: "Who can see it",
+          body: "You can see your account, your notes, and your posts. Other signed-in people can see NiaChat posts and comments that are allowed. Administrators can see posts and comments, including those held for review. Support staff can see messages you send them. Nia does not sell this information. Nia shares it when the law requires it, for example a court order.",
+        },
+        {
+          title: "How long Nia keeps it",
+          body: "Nia keeps this while your account is open. If you delete your account, Nia removes the account, your notes, your posts, your comments, reactions, and reports on those posts at that time. Messages you sent through Report a problem, and the staff record of moderation actions, stay after that delete.",
+        },
+        {
+          title: "Your rights",
+          body: "You can see your email and username on your account page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report a problem, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
+        },
+        {
+          title: "Staying safer",
+          body: "Use Quick exit if you need to leave this site quickly. Log out on a shared phone. Use an email address that only you can open.",
+        },
+        {
+          title: "Who to contact",
+          body: "The Nia team runs this platform. Use Report a problem on this site to reach them about your data.",
+        },
+        {
+          title: "This version",
+          body: "Version 1.0, November 2026. If this notice changes, Nia will ask you to agree again before you write in NiaChat or use Report a problem.",
         },
       ],
       scrollHint: "Read to the end, then you can agree.",
-      agreeLabel: "I have read and agree to these terms.",
-      accept: "Agree and continue",
+      agreeLabel: "I agree",
+      accept: "I agree and continue",
       accepting: "Saving",
       later: "Not now",
       errors: {
+        consent_required: "Tick I agree before you continue.",
         signature_invalid: "That agreement could not be saved. Try again.",
         invalid_credentials: "Sign in again to save your agreement.",
         request_failed: "Something went wrong. Try again.",
@@ -1172,40 +1197,65 @@ const copy = {
       },
     },
     consent: {
-      title: "Masharti na vigezo",
-      lede: "Tafadhali soma hii kabla ya kuendelea. Nia si huduma ya dharura.",
+      title: "Faragha na idhini",
+      lede: "Tafadhali soma hii kabla ya kuendelea. Nia si huduma ya dharura. Toleo la 1.0, Novemba 2026.",
       sections: [
         {
           title: "Nia ni nini",
-          body: "Nia inashiriki taarifa na mahali pa kuandika. Nia si polisi, si hospitali, si mshauri, na si huduma ya dharura. Nia haiangalii NiaChat ili kutuma msaada.",
+          body: "Nia inatoa taarifa, nambari za msaada, na mahali pa faragha pa kuandika. Nia si polisi, si hospitali, si mshauri, na si huduma ya dharura. Ukurasa wa Haki unaeleza sheria kwa lugha rahisi. Si ushauri wa kisheria. Ukiwa hatarini, au ukiweza kujidhuru au kumdhuru mtu mwingine, piga 999 au 112. Kwa msaada baada ya unyanyasaji wa kijinsia, piga 1195. Kuandika kwenye NiaChat hakutumi msaada.",
         },
         {
-          title: "Wewe au mtu mwingine mkiweza kuumia",
-          body: "Ukiwa hatarini, au ukiweza kujidhuru au kumdhuru mtu mwingine, piga 999 au 112 sasa. Kwa msaada, piga 1195. Kuandika hayo kwenye NiaChat si ombi la msaada ambalo Nia itajibu.",
+          title: "Umri wako",
+          body: "Unathibitisha kuwa una miaka 18 au zaidi.",
         },
         {
-          title: "Ujumbe haufanyi nini",
-          body: "Ukiandika kuwa unaweza kujidhuru au kumdhuru mtu, Nia haina wajibu wa kukutafuta, kukuandikia, au kutuma msaada. Nia inaweza isiuone ujumbe huo kwa wakati. Neno linalosubiri msimamizi si msaada wa dharura.",
+          title: "Nia huhifadhi nini",
+          body: "Nia huhifadhi barua pepe yako, jina la mtumiaji, picha ya wasifu, andiko lako la faragha, machapisho ya NiaChat, maoni, majibu, na ripoti, ujumbe unaotuma kupitia Ripoti tatizo, na tarehe na saa za mambo hayo. Hii inaendesha akaunti yako, inaonyesha machapisho chini ya jina lako la mtumiaji, na inawaruhusu wafanyakazi kusimamia. Nia haiulizi jina lako halisi. Ukiendelea na Google, Nia huhifadhi barua pepe Google inayothibitisha na kitambulisho cha akaunti ya Google. Haihifadhi jina lako la wasifu wa Google. Nambari ya siri ya andiko huhifadhiwa kama msimbo pekee.",
         },
         {
-          title: "Unachokubali",
-          body: "Unaelewa kuwa Nia na watu wanaoiendesha hawatoi msaada wa dharura. Hutawawajibisha kwa madhara yanayofuata kitu kilichoandikwa kwenye NiaChat. Bado unaweza kupiga 999, 112, au 1195 wakati wowote.",
+          title: "Andiko la faragha",
+          body: "Andiko husimbwa kwa njia fiche kabla ya kuhifadhiwa. Kwenye tovuti, ni wewe tu unayeweza kufungua andiko zako, baada ya nambari yako ya siri. Ufunguo wa usimbaji huhifadhiwa kwenye seva. Ulinzi huu unategemea seva hiyo kubaki salama.",
         },
         {
-          title: "Jina lako",
-          body: "Nia haiulizi jina lako halisi. Usiandike jina lako halisi, nambari ya simu, au mahali pa kazi kwenye NiaChat.",
+          title: "NiaChat",
+          body: "Machapisho na maoni huonekana chini ya jina lako la mtumiaji. Yamesimbwa kwenye hifadhidata, na wasimamizi wanaweza kuyafungua. Chapisho au maoni yenye nambari ya simu, barua pepe, au neno lililozuiwa husubiri hadi msimamizi aliruhusu au alifiche. Watu wengine wanaweza kuripoti chapisho au maoni. Ripoti za kutosha hulificha ili likaguliwe. Wasimamizi wanaweza kusoma machapisho, kuyaficha, na kujibu. Unaweza kufuta chapisho lako. Usiandike jina lako halisi, wala chochote kinachokutambulisha wewe au mtu mwingine.",
         },
         {
-          title: "Kinachohifadhiwa",
-          body: "Tarehe uliyokubali inahifadhiwa kwenye akaunti yako. Inaonyesha kuwa umesoma toleo hili. Ukifuta akaunti, kumbukumbu hiyo inafutwa pia. Lazima ukubali toleo hili kabla ya kuandika kwenye NiaChat.",
+          title: "Kanuni za jamii",
+          body: "Waheshimu watu. Usinyanyase, usitishie, wala usimtaje mtu kwa jina. Usishiriki hadithi ya mtu mwingine isipokuwa amekubali.",
+        },
+        {
+          title: "Nani anaweza kuona",
+          body: "Unaweza kuona akaunti yako, andiko zako, na machapisho yako. Watu wengine walioingia wanaweza kuona machapisho na maoni ya NiaChat yaliyoruhusiwa. Wasimamizi wanaweza kuona machapisho na maoni, ikiwemo yale yanayosubiri ukaguzi. Wafanyakazi wa msaada wanaweza kuona ujumbe unaowatumia. Nia haiuzi taarifa hii. Nia huishiriki sheria inapohitaji, kwa mfano amri ya mahakama.",
+        },
+        {
+          title: "Nia huihifadhi kwa muda gani",
+          body: "Nia huhifadhi data hii wakati akaunti yako iko wazi. Ukifuta akaunti, Nia huondoa akaunti, andiko zako, machapisho yako, maoni yako, majibu, na ripoti za machapisho hayo wakati huo. Ujumbe uliotuma kupitia Ripoti tatizo, na kumbukumbu ya wafanyakazi kuhusu usimamizi, hubaki baada ya kufuta huko.",
+        },
+        {
+          title: "Haki zako",
+          body: "Unaweza kuona barua pepe na jina lako la mtumiaji kwenye ukurasa wa akaunti, kusoma na kuhariri andiko zako, kubadilisha jina la mtumiaji, na kufuta andiko, chapisho, au akaunti yote. Kufuta akaunti kunaondoa idhini hii. Pia unaweza kutumia Ripoti tatizo, ukiwa umeingia, kuomba kuona, kusahihisha, au kufuta data yako, au kuondoa idhini. Unaweza kulalamika kwa Ofisi ya Kamishna wa Ulinzi wa Data (ODPC).",
+        },
+        {
+          title: "Kujilinda",
+          body: "Tumia Toka haraka ukihitaji kuondoka kwenye tovuti hii upesi. Toka kwenye akaunti ukitumia simu inayoshirikiwa. Tumia barua pepe ambayo ni wewe tu unayeweza kuifungua.",
+        },
+        {
+          title: "Mawasiliano",
+          body: "Timu ya Nia inaendesha jukwaa hili. Tumia Ripoti tatizo kwenye tovuti hii kuwasiliana nao kuhusu data yako.",
+        },
+        {
+          title: "Toleo hili",
+          body: "Toleo la 1.0, Novemba 2026. Notisi hii ikibadilika, Nia itakuomba ukubali tena kabla ya kuandika kwenye NiaChat au kutumia Ripoti tatizo.",
         },
       ],
       scrollHint: "Soma hadi mwisho, kisha unaweza kukubali.",
-      agreeLabel: "Nimesoma na nakubali masharti haya.",
-      accept: "Kubali na uendelee",
+      agreeLabel: "Nakubali",
+      accept: "Nakubali na kuendelea",
       accepting: "Inahifadhi",
       later: "Sio sasa",
       errors: {
+        consent_required: "Weka tiki kwenye Nakubali kabla ya kuendelea.",
         signature_invalid: "Makubaliano hayo hayakuhifadhiwa. Jaribu tena.",
         invalid_credentials: "Ingia tena ili kuhifadhi makubaliano yako.",
         request_failed: "Kuna tatizo. Jaribu tena.",

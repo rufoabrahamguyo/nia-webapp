@@ -6,8 +6,8 @@ import Report from "../models/Report.js";
 import Story from "../models/Story.js";
 import User from "../models/User.js";
 import { avatarId, randomAvatar } from "../avatars.js";
-import { CONSENT_VERSION, consentIsCurrent, readSignature } from "../consent.js";
-import { openText, sealText } from "../recordCrypto.js";
+import { CONSENT_VERSION, consentIsCurrent } from "../consent.js";
+import { sealText } from "../recordCrypto.js";
 import { generateUsername, normalizeUsername, usernameError } from "../username.js";
 import {
   clearAdminSession,
@@ -381,8 +381,8 @@ router.get("/consent", async (req, res) => {
   res.set("Cache-Control", "no-store");
   res.json({
     signed,
+    version: CONSENT_VERSION,
     signedAt: signed ? user.consentSignedAt : null,
-    signature: signed ? openText(user.consentSignatureSealed, user._id) : "",
   });
 });
 
@@ -392,10 +392,8 @@ router.post("/consent", async (req, res) => {
     sendError(res, 401, "invalid_credentials");
     return;
   }
-  const agreed = req.body?.agreed === true;
-  const signature = readSignature(req.body?.signature);
-  if (!agreed && !signature) {
-    sendError(res, 400, "signature_invalid");
+  if (req.body?.agreed !== true) {
+    sendError(res, 400, "consent_required");
     return;
   }
   const user = await User.findById(userId).select("+consentSignatureSealed");
@@ -405,7 +403,7 @@ router.post("/consent", async (req, res) => {
   }
   user.consentVersion = CONSENT_VERSION;
   user.consentSignedAt = new Date();
-  user.consentSignatureSealed = sealText(agreed ? `agreed:${CONSENT_VERSION}` : signature, user._id);
+  user.consentSignatureSealed = sealText(`agreed:${CONSENT_VERSION}`, user._id);
   await user.save();
   res.json(publicUser(user));
 });
