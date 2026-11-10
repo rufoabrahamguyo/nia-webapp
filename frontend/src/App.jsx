@@ -15,7 +15,6 @@ import Home from "./components/Home.jsx";
 import NiaChat from "./components/NiaChat.jsx";
 import ReferralPathways from "./components/ReferralPathways.jsx";
 import Reminder from "./components/Reminder.jsx";
-import ReportButton from "./components/ReportButton.jsx";
 import Screen from "./components/Screen.jsx";
 
 export default function App() {
@@ -144,7 +143,6 @@ export default function App() {
         onNavigate={open}
         onHelp={showHelp}
         onLeave={leaveSite}
-        onLogout={logout}
       />
       <main id="content">
         {isAuth ? (
@@ -206,7 +204,6 @@ export default function App() {
       {consentOpen && user && !user.consentSigned ? (
         <ConsentDialog text={text} onClose={closeConsent} onSigned={setUser} />
       ) : null}
-      <ReportButton text={text} user={user} onOpen={open} />
     </div>
   );
 }

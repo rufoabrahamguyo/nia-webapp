@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { requestAuth } from "../auth.js";
 import { AvatarPicker } from "../avatars.jsx";
 import ButtonIcon from "./ButtonIcon.jsx";
@@ -18,6 +18,19 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
   const [avatarPending, setAvatarPending] = useState(false);
   const [confirm, setConfirm] = useState("");
   const [accountPassword, setAccountPassword] = useState("");
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const logoutTitleId = useId();
+  const stayRef = useRef(null);
+
+  useEffect(() => {
+    if (!logoutOpen) return;
+    stayRef.current?.focus();
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setLogoutOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [logoutOpen]);
 
   async function chooseAvatar(avatar) {
     if (avatar === user.avatar || avatarPending) return;
@@ -76,11 +89,11 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
   return (
     <section className="auth-panel" aria-labelledby="account-title">
       <div className="auth-form">
-        <h1 id="account-title">{isSettings ? account.settingsTitle : account.profileTitle}</h1>
-        <p className="auth-line">{isSettings ? account.settingsLine : account.profileLine}</p>
-
         {isSettings ? (
+          <>
           <form onSubmit={onSubmit}>
+            <h1 id="account-title">{account.settingsTitle}</h1>
+            <p className="auth-line">{account.settingsLine}</p>
             <fieldset className="auth-choice">
               <legend>{auth.nameChoice}</legend>
               <label>
@@ -137,7 +150,7 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
               </label>
             )}
 
-            {error && (
+            {error && !confirm && (
               <p className="auth-error" role="alert">
                 {error}
               </p>
@@ -158,90 +171,102 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
               </button>
             </div>
           </form>
+          <div className="account-danger">
+            <h2>{account.accountTitle}</h2>
+            <p className="auth-line">{account.accountLine}</p>
+            {confirm ? (
+              <form onSubmit={closeAccount}>
+                <p>{confirm === "delete" ? account.deleteAsk : account.deactivateAsk}</p>
+                {user.hasPassword ? (
+                  <PasswordField
+                    label={auth.password}
+                    name="account-password"
+                    autoComplete="current-password"
+                    value={accountPassword}
+                    placeholder={auth.passwordPlaceholder}
+                    onChange={(event) => setAccountPassword(event.target.value)}
+                    showLabel={auth.showPassword}
+                    hideLabel={auth.hidePassword}
+                  />
+                ) : null}
+                {error ? (
+                  <p className="auth-error" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+                <div className="account-actions">
+                  <button
+                    type="submit"
+                    className={confirm === "delete" ? "button button-help button-icon" : "button button-secondary button-icon"}
+                    disabled={pending}
+                  >
+                    <ButtonIcon name={confirm === "delete" ? "trash" : "pause"} />
+                    {pending ? auth.submitting : confirm === "delete" ? account.deleteYes : account.deactivateYes}
+                  </button>
+                  <button type="button" className="button button-secondary button-icon" onClick={cancelClose} disabled={pending}>
+                    <ButtonIcon name="close" />
+                    {account.cancel}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="account-actions">
+                <button type="button" className="button button-secondary button-icon" onClick={() => { setErrorCode(""); setConfirm("deactivate"); }}>
+                  <ButtonIcon name="pause" />
+                  {account.deactivate}
+                </button>
+                <button type="button" className="button button-help button-icon" onClick={() => { setErrorCode(""); setConfirm("delete"); }}>
+                  <ButtonIcon name="trash" />
+                  {account.delete}
+                </button>
+              </div>
+            )}
+          </div>
+          </>
         ) : (
           <>
+            <h1 id="account-title" className="account-username">{user.username}</h1>
+            <p className="auth-line">
+              {user.usernameKind === "chosen" ? account.profileChosen : account.profileAnonymous}
+            </p>
             <AvatarPicker
               legend={text.faces.legend}
               labels={text.faces}
               value={user.avatar || "cat"}
               onChange={chooseAvatar}
             />
-            {error && !confirm ? <p className="auth-error" role="alert">{error}</p> : null}
-            <dl className="account-facts">
-              <div>
-                <dt>{account.username}</dt>
-                <dd>{user.username}</dd>
-              </div>
-              {user.email && (
-                <div>
-                  <dt>{account.email}</dt>
-                  <dd>{user.email}</dd>
-                </div>
-              )}
-            </dl>
-            <p className="auth-line">
-              {user.usernameKind === "chosen" ? account.profileChosen : account.profileAnonymous}
-            </p>
-            <div className="account-actions">
-              <button type="button" className="button button-secondary button-icon" onClick={() => onNavigate("settings")}>
-                <ButtonIcon name="pencil" />
-                {account.openSettings}
+            {error ? <p className="auth-error" role="alert">{error}</p> : null}
+            <div className="account-links">
+              <button type="button" className="button button-secondary" onClick={() => onNavigate("settings")}>
+                {text.settings}
               </button>
-            </div>
-            <div className="account-danger">
-              <h2>{account.accountTitle}</h2>
-              <p className="auth-line">{account.accountLine}</p>
-              {confirm ? (
-                <form onSubmit={closeAccount}>
-                  <p>{confirm === "delete" ? account.deleteAsk : account.deactivateAsk}</p>
-                  {user.hasPassword ? (
-                    <PasswordField
-                      label={auth.password}
-                      name="account-password"
-                      autoComplete="current-password"
-                      value={accountPassword}
-                      placeholder={auth.passwordPlaceholder}
-                      onChange={(event) => setAccountPassword(event.target.value)}
-                      showLabel={auth.showPassword}
-                      hideLabel={auth.hidePassword}
-                    />
-                  ) : null}
-                  {error ? (
-                    <p className="auth-error" role="alert">
-                      {error}
-                    </p>
-                  ) : null}
-                  <div className="account-actions">
-                    <button
-                      type="submit"
-                      className={confirm === "delete" ? "button button-help button-icon" : "button button-secondary button-icon"}
-                      disabled={pending}
-                    >
-                      <ButtonIcon name={confirm === "delete" ? "trash" : "pause"} />
-                      {pending ? auth.submitting : confirm === "delete" ? account.deleteYes : account.deactivateYes}
-                    </button>
-                    <button type="button" className="button button-secondary button-icon" onClick={cancelClose} disabled={pending}>
-                      <ButtonIcon name="close" />
-                      {account.cancel}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div className="account-actions">
-                  <button type="button" className="button button-secondary button-icon" onClick={() => { setErrorCode(""); setConfirm("deactivate"); }}>
-                    <ButtonIcon name="pause" />
-                    {account.deactivate}
-                  </button>
-                  <button type="button" className="button button-help button-icon" onClick={() => { setErrorCode(""); setConfirm("delete"); }}>
-                    <ButtonIcon name="trash" />
-                    {account.delete}
-                  </button>
-                </div>
-              )}
+              <button type="button" className="button button-secondary" onClick={() => onNavigate("support")}>
+                {account.support}
+              </button>
+              <button type="button" className="button button-secondary" onClick={() => setLogoutOpen(true)}>
+                {text.logOut}
+              </button>
             </div>
           </>
         )}
       </div>
+      {logoutOpen ? (
+        <div className="logout-layer">
+          <button type="button" className="logout-backdrop" aria-label={text.logoutStay} onClick={() => setLogoutOpen(false)} />
+          <div className="logout-dialog" role="dialog" aria-modal="true" aria-labelledby={logoutTitleId}>
+            <h2 id={logoutTitleId}>{text.logoutTitle}</h2>
+            <p>{text.logoutLine}</p>
+            <div className="logout-actions">
+              <button ref={stayRef} type="button" className="button button-accent" onClick={() => setLogoutOpen(false)}>
+                {text.logoutStay}
+              </button>
+              <button type="button" className="button button-secondary" onClick={onLogout}>
+                {text.logoutConfirm}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

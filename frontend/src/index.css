@@ -220,53 +220,18 @@ a:focus-visible {
   margin-left: 8px;
 }
 
-.account-menu {
-  position: relative;
-}
-
-.account-chip {
-  display: flex;
+.account-profile {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  max-width: min(240px, 72vw);
-  min-height: 44px;
-  padding: 4px 8px 4px 4px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.account-chip:hover,
-.account-chip[aria-expanded="true"] {
-  background: var(--card);
-}
-
-.account-chip-copy {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 auto;
-  order: 1;
-}
-
-.account-label {
-  overflow: hidden;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .account-mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
-  order: 0;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   overflow: hidden;
   border-radius: 50%;
   background: transparent;
@@ -276,61 +241,6 @@ a:focus-visible {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.account-chevron {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-  order: 2;
-  transition: transform 0.15s ease;
-}
-
-.account-chip[aria-expanded="false"] .account-chevron {
-  transform: rotate(180deg);
-}
-
-.account-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 20;
-  min-width: 196px;
-  padding: 6px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: 0 12px 28px rgba(27, 42, 74, 0.12);
-}
-
-.account-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 44px;
-  padding: 8px 12px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--ink);
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-}
-
-.account-item svg {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-}
-
-.account-item:hover,
-.account-item:focus-visible,
-.account-item[aria-current="page"] {
-  background: var(--card);
 }
 
 .logout-layer {
@@ -1211,6 +1121,12 @@ h1 {
   letter-spacing: -0.03em;
 }
 
+.video-frame {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
 .referral-video {
   display: block;
   width: 100%;
@@ -1219,6 +1135,54 @@ h1 {
   background: #f4f7fb url("/images/referral-poster.png") center / cover no-repeat;
   border-radius: 16px;
   object-fit: contain;
+}
+
+.video-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border: 0;
+  padding: 0;
+  background: rgba(16, 24, 32, 0.34);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.video-play-button {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow: 0 6px 16px rgba(16, 24, 32, 0.28);
+}
+
+.video-play-button svg {
+  width: 24px;
+  height: 24px;
+  margin-left: 3px;
+  fill: currentColor;
+}
+
+.video-play-label {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.video-play:hover .video-play-button,
+.video-play:focus-visible .video-play-button {
+  transform: scale(1.06);
 }
 
 .help-video-wrap {
@@ -1230,7 +1194,7 @@ h1 {
   background-image: url("/images/help-someone-poster.png");
 }
 
-.recognise-video {
+.recognise-video .referral-video {
   background-image: url("/images/recognise-poster.png");
 }
 
@@ -3152,11 +3116,6 @@ h1 {
     width: 100%;
     justify-content: center;
   }
-
-  .account-menu,
-  .account-chip {
-    width: 100%;
-  }
 }
 
 @media (min-width: 720px) {
@@ -3431,6 +3390,17 @@ h1 {
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.account-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.account-links .button {
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .account-actions {
@@ -4167,54 +4137,9 @@ h1 {
   }
 }
 
-.report-fab {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 25;
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--white);
-  color: var(--ink);
-  box-shadow: 0 10px 24px rgba(27, 42, 74, 0.22);
-  cursor: pointer;
-}
-
-.report-fab svg {
-  width: 34px;
-  height: 34px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.report-fab:hover,
-.report-fab[aria-expanded="true"] {
-  background: var(--card);
-}
-
-.report-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 35;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-}
-
-.report-backdrop {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: rgba(16, 24, 48, 0.55);
-  cursor: pointer;
+.report-sheet {
+  max-height: none;
+  margin: 0 auto 28px;
 }
 
 .report-dialog {
@@ -4240,21 +4165,6 @@ h1 {
 .report-sent {
   margin: 6px 0 0;
   color: rgba(255, 255, 255, 0.78);
-}
-
-.report-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  border: 0;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white);
-  font-size: 1.4rem;
-  line-height: 1;
-  cursor: pointer;
 }
 
 .report-checks {

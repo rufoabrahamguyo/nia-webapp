@@ -1,4 +1,5 @@
 import HelpGuide from "./HelpGuide.jsx";
+import VideoFrame from "./VideoFrame.jsx";
 import PrivateRecord from "./PrivateRecord.jsx";
 import Scripts from "./Scripts.jsx";
 
@@ -36,17 +37,14 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
         <section className="page-band" aria-labelledby="section-title">
           {id === "learn" ? (
             <div className="help-video-wrap">
-              <video
-                className="referral-video recognise-video"
-                controls
-                playsInline
-                preload="metadata"
-                poster="/images/recognise-poster.png"
+              <VideoFrame
+                className="recognise-video"
                 src="/videos/recognise-it.mp4"
-                aria-label={screen.title}
-              >
-                {text.referralVideoFallback}
-              </video>
+                poster="/images/recognise-poster.png"
+                label={screen.title}
+                playLabel={text.referralVideoPlay}
+                fallback={text.referralVideoFallback}
+              />
             </div>
           ) : null}
           <div className="page-band-intro">
@@ -73,17 +71,13 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
           <section className="page-band">
             {id === "learn" ? (
               <div className="help-video-wrap">
-                <video
-                  className="referral-video"
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster="/images/help-someone-poster.png"
+                <VideoFrame
                   src="/videos/how-to-help-someone.mp4"
-                  aria-label={screen.guide.title}
-                >
-                  {text.referralVideoFallback}
-                </video>
+                  poster="/images/help-someone-poster.png"
+                  label={screen.guide.title}
+                  playLabel={text.referralVideoPlay}
+                  fallback={text.referralVideoFallback}
+                />
               </div>
             ) : null}
             <HelpGuide sections={screen.guide.sections} layout="guide" onOpen={onOpen} />

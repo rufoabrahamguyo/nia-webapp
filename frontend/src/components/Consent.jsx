@@ -19,7 +19,7 @@ function reachedEnd(node) {
   return node.scrollHeight <= node.clientHeight + 8 || node.scrollTop + node.clientHeight >= node.scrollHeight - 8;
 }
 
-export default function ConsentDialog({ text, onClose, onSigned }) {
+export default function ConsentDialog({ text, onClose, onSigned, onAgree }) {
   const copy = text.consent;
   const titleId = useId();
   const docRef = useRef(null);
@@ -44,6 +44,10 @@ export default function ConsentDialog({ text, onClose, onSigned }) {
     setError("");
     setStatus("saving");
     try {
+      if (onAgree) {
+        await onAgree();
+        return;
+      }
       const next = await requestAuth("/api/auth/consent", { agreed: true });
       clearConsentPending();
       setStatus("ready");

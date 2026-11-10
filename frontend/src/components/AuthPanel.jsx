@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { requestAuth } from "../auth.js";
 import { AvatarPicker } from "../avatars.jsx";
+import ConsentDialog from "./Consent.jsx";
 import PasswordField from "./PasswordField.jsx";
 
 function GoogleMark() {
@@ -27,7 +28,21 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
   const [avatar, setAvatar] = useState("cat");
   const [errorCode, setErrorCode] = useState(initialErrorCode);
   const [pending, setPending] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
   const error = errorCode ? auth.errors[errorCode] || auth.errors.request_failed : "";
+
+  async function createAccount() {
+    const body = isGoogle ? { usernameKind, agreed: true } : { email, password };
+    if (asksForName) {
+      body.usernameKind = usernameKind;
+      body.avatar = avatar;
+      body.agreed = true;
+      if (usernameKind === "chosen") body.username = username;
+    }
+    const path = isGoogle ? "/api/auth/google/complete" : isSignup ? "/api/auth/signup" : "/api/auth/login";
+    const user = await requestAuth(path, body);
+    onSuccess(user);
+  }
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -38,18 +53,27 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
       return;
     }
 
+    if (asksForName) {
+      setShowConsent(true);
+      return;
+    }
+
     setPending(true);
     try {
-      const body = isGoogle ? { usernameKind } : { email, password };
-      if (asksForName) {
-        body.usernameKind = usernameKind;
-        body.avatar = avatar;
-        if (usernameKind === "chosen") body.username = username;
-      }
-      const path = isGoogle ? "/api/auth/google/complete" : isSignup ? "/api/auth/signup" : "/api/auth/login";
-      const user = await requestAuth(path, body);
-      onSuccess(user);
+      await createAccount();
     } catch (caught) {
+      setErrorCode(caught.code || "request_failed");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function agreeAndRegister() {
+    setPending(true);
+    try {
+      await createAccount();
+    } catch (caught) {
+      setShowConsent(false);
       setErrorCode(caught.code || "request_failed");
     } finally {
       setPending(false);
@@ -191,6 +215,9 @@ export default function AuthPanel({ mode, text, onSwitch, onSuccess, initialErro
           )}
         </form>
       </div>
+      {showConsent ? (
+        <ConsentDialog text={text} onClose={() => setShowConsent(false)} onAgree={agreeAndRegister} />
+      ) : null}
     </section>
   );
 }

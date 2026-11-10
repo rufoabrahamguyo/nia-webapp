@@ -1,3 +1,5 @@
+import VideoFrame from "./VideoFrame.jsx";
+
 export default function ReferralPathways({ text }) {
   return (
     <article className="page page-referral">
@@ -12,16 +14,13 @@ export default function ReferralPathways({ text }) {
         <div className="referral-media">
           <section aria-labelledby="referral-video-title">
             <h2 id="referral-video-title">{text.referralVideoTitle}</h2>
-            <video
-              className="referral-video"
-              controls
-              playsInline
-              preload="metadata"
-              poster="/images/referral-poster.png"
+            <VideoFrame
               src="/videos/referral-pathway.mp4"
-            >
-              {text.referralVideoFallback}
-            </video>
+              poster="/images/referral-poster.png"
+              label={text.referralVideoTitle}
+              playLabel={text.referralVideoPlay}
+              fallback={text.referralVideoFallback}
+            />
           </section>
 
           <section aria-labelledby="referral-chart-title">

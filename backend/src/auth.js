@@ -42,7 +42,6 @@ export function publicUser(user) {
     username: user.username,
     usernameKind: user.usernameKind,
     avatar: avatarId(user.avatar) || "cat",
-    email: user.email,
     hasPassword: Boolean(user.hasPassword),
     consentSigned: consentIsCurrent(user),
   };

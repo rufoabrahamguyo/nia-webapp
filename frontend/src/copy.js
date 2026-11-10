@@ -113,6 +113,7 @@ const copy = {
     referralLine:
       "A survivor can be connected to safety, medical care, the police, legal help, and community support. You can start with any of these.",
     referralVideoTitle: "How it works",
+    referralVideoPlay: "Play video",
     referralVideoFallback: "Your browser cannot play this video.",
     referralChartTitle: "The pathway",
     referralChartAlt:
@@ -256,12 +257,12 @@ const copy = {
     account: {
       profileTitle: "Profile",
       profileLine: "This is the name and picture Nia uses for you. Your real name is not stored.",
-      profileAnonymous: "Nia chose this name. It is not based on your email.",
+      profileAnonymous: "Nia chose this name.",
       profileChosen: "You chose this name.",
+      support: "Contact support",
       settingsTitle: "Settings",
       settingsLine: "Change how Nia addresses you.",
       username: "Username",
-      email: "Email",
       save: "Save",
       saved: "Saved.",
       openSettings: "Change this name",
@@ -393,7 +394,7 @@ const copy = {
         },
         {
           title: "Your rights",
-          body: "You can see your email and username on your account page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report a problem, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
+          body: "You can see your username on your profile page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report a problem, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
         },
         {
           title: "Staying safer",
@@ -467,6 +468,7 @@ const copy = {
         google_denied: "Google sign-in was cancelled.",
         google_unverified: "That Google account has no verified email.",
         google_expired: "Google sign-in expired. Try again.",
+        consent_required: "Read and agree before you create an account.",
       },
     },
     chat: {
@@ -954,6 +956,7 @@ const copy = {
     referralLine:
       "Mtu aliyenusurika anaweza kuunganishwa na usalama, matibabu, polisi, msaada wa kisheria, na jamii. Unaweza kuanza na yoyote kati ya hizi.",
     referralVideoTitle: "Jinsi inavyofanya kazi",
+    referralVideoPlay: "Cheza video",
     referralVideoFallback: "Kivinjari hiki hakiwezi kucheza video hii.",
     referralChartTitle: "Njia",
     referralChartAlt:
@@ -1097,12 +1100,12 @@ const copy = {
     account: {
       profileTitle: "Wasifu",
       profileLine: "Hili ndilo jina na picha Nia inavyotumia. Jina lako halisi halijahifadhiwa.",
-      profileAnonymous: "Nia ilichagua jina hili. Halitokani na barua pepe yako.",
+      profileAnonymous: "Nia ilichagua jina hili.",
       profileChosen: "Ulichagua jina hili.",
+      support: "Wasiliana na msaada",
       settingsTitle: "Mipangilio",
       settingsLine: "Badilisha jinsi Nia inavyokuita.",
       username: "Jina la mtumiaji",
-      email: "Barua pepe",
       save: "Hifadhi",
       saved: "Imehifadhiwa.",
       openSettings: "Badilisha jina hili",
@@ -1234,7 +1237,7 @@ const copy = {
         },
         {
           title: "Haki zako",
-          body: "Unaweza kuona barua pepe na jina lako la mtumiaji kwenye ukurasa wa akaunti, kusoma na kuhariri andiko zako, kubadilisha jina la mtumiaji, na kufuta andiko, chapisho, au akaunti yote. Kufuta akaunti kunaondoa idhini hii. Pia unaweza kutumia Ripoti tatizo, ukiwa umeingia, kuomba kuona, kusahihisha, au kufuta data yako, au kuondoa idhini. Unaweza kulalamika kwa Ofisi ya Kamishna wa Ulinzi wa Data (ODPC).",
+          body: "Unaweza kuona jina lako la mtumiaji kwenye ukurasa wa wasifu, kusoma na kuhariri andiko zako, kubadilisha jina la mtumiaji, na kufuta andiko, chapisho, au akaunti yote. Kufuta akaunti kunaondoa idhini hii. Pia unaweza kutumia Ripoti tatizo, ukiwa umeingia, kuomba kuona, kusahihisha, au kufuta data yako, au kuondoa idhini. Unaweza kulalamika kwa Ofisi ya Kamishna wa Ulinzi wa Data (ODPC).",
         },
         {
           title: "Kujilinda",
@@ -1308,6 +1311,7 @@ const copy = {
         google_denied: "Kuingia kwa Google kumesitishwa.",
         google_unverified: "Akaunti hiyo ya Google haina barua pepe iliyothibitishwa.",
         google_expired: "Kuingia kwa Google kumekwisha muda. Jaribu tena.",
+        consent_required: "Soma na ukubali kabla ya kufungua akaunti.",
       },
     },
     chat: {

@@ -78,7 +78,22 @@ async function createAccount(fields, usernameKind, chosenName) {
   return { error: "account_unavailable" };
 }
 
+function agreedToTerms(body) {
+  return body?.agreed === true;
+}
+
+async function stampConsent(user) {
+  user.consentVersion = CONSENT_VERSION;
+  user.consentSignedAt = new Date();
+  user.consentSignatureSealed = sealText(`agreed:${CONSENT_VERSION}`, user._id);
+  await user.save();
+}
+
 router.post("/signup", async (req, res) => {
+  if (!agreedToTerms(req.body)) {
+    sendError(res, 400, "consent_required");
+    return;
+  }
   const email = String(req.body?.email || "").trim().toLowerCase();
   const password = String(req.body?.password || "");
   const usernameKind = req.body?.usernameKind === "chosen" ? "chosen" : "anonymous";
@@ -98,6 +113,7 @@ router.post("/signup", async (req, res) => {
     sendError(res, 400, result.error);
     return;
   }
+  await stampConsent(result.user);
   signSession(res, result.user._id);
   res.status(201).json(publicUser(result.user));
 });
@@ -192,6 +208,10 @@ router.post("/google/complete", async (req, res) => {
     sendError(res, 401, "google_expired");
     return;
   }
+  if (!agreedToTerms(req.body)) {
+    sendError(res, 400, "consent_required");
+    return;
+  }
 
   const usernameKind = req.body?.usernameKind === "chosen" ? "chosen" : "anonymous";
   const result = await createAccount(
@@ -204,6 +224,7 @@ router.post("/google/complete", async (req, res) => {
     return;
   }
 
+  await stampConsent(result.user);
   clearGooglePending(res);
   signSession(res, result.user._id);
   res.status(201).json(publicUser(result.user));
