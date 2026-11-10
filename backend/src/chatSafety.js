@@ -27,6 +27,44 @@ function blockedPattern(word) {
 
 const BLOCKED_PATTERNS = BLOCKED.map(blockedPattern);
 
+// Spellings people actually use, including "consellor". A story that asks for a
+// counsellor stays visible. It is only marked so an administrator can reply.
+const SUPPORT_WORDS = [
+  "counsellor",
+  "counselor",
+  "counsellors",
+  "counselors",
+  "councellor",
+  "councelor",
+  "consellor",
+  "conselor",
+  "counseller",
+  "counselling",
+  "counseling",
+  "mshauri",
+  "washauri",
+  "therapist",
+  "therapists",
+];
+
+const SUPPORT_PATTERNS = SUPPORT_WORDS.map(blockedPattern);
+
+export function asksForCounsellor(value) {
+  const lower = String(value || "").toLowerCase();
+  return SUPPORT_PATTERNS.some((pattern) => pattern.test(lower));
+}
+
+export function withSupportReview(body, fields) {
+  if (fields.needsReview || fields.status === "pending" || !asksForCounsellor(body)) return fields;
+  return {
+    ...fields,
+    status: "allowed",
+    needsReview: true,
+    holdReason: "support",
+    queueAt: new Date(),
+  };
+}
+
 export function holdReasonFor(value) {
   const text = String(value || "");
   const compact = text.replace(/[\s().-]/g, "");

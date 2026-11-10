@@ -4,9 +4,9 @@ const storySchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     authorName: { type: String, required: true, maxlength: 40 },
-    body: { type: String, required: true, maxlength: 4000 },
+    sealed: { type: String, required: true, maxlength: 24000 },
     status: { type: String, required: true, enum: ["pending", "allowed", "hidden"], default: "allowed", index: true },
-    holdReason: { type: String, enum: ["", "contact", "blocked_word", "reports"], default: "" },
+    holdReason: { type: String, enum: ["", "contact", "blocked_word", "reports", "support"], default: "" },
     reportCount: { type: Number, default: 0 },
     reviewedReportCount: { type: Number, default: 0 },
     needsReview: { type: Boolean, default: false },

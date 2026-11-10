@@ -99,7 +99,7 @@ export default function AdminApp() {
             {error ? <p className="auth-error" role="alert">{error}</p> : null}
             {tab === "helplines" ? <AdminHelplines text={text} language={language} onError={onError} /> : null}
             {tab === "pages" ? <AdminPages text={text} onError={onError} /> : null}
-            {tab === "chat" ? <AdminChat text={text} onError={onError} /> : null}
+            {tab === "chat" ? <AdminChat text={text} language={language} onError={onError} /> : null}
             {tab === "audit" ? <AdminAudit text={text} language={language} onError={onError} /> : null}
           </main>
         </div>

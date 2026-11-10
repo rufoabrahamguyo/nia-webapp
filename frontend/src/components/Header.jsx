@@ -17,10 +17,13 @@ export default function Header({
   const accountRef = useRef(null);
   const accountButtonRef = useRef(null);
   const menuId = useId();
+  const navPanelId = useId();
   const dialogTitleId = useId();
   const stayRef = useRef(null);
+  const navToggleRef = useRef(null);
   const [accountOpen, setAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     const node = headerRef.current;
@@ -71,6 +74,21 @@ export default function Header({
   }, [user]);
 
   useEffect(() => {
+    setNavOpen(false);
+  }, [view]);
+
+  useEffect(() => {
+    if (!navOpen) return;
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      setNavOpen(false);
+      navToggleRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [navOpen]);
+
+  useEffect(() => {
     if (!confirmLogout) return;
     stayRef.current?.focus();
     const onKeyDown = (event) => {
@@ -82,8 +100,14 @@ export default function Header({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [confirmLogout]);
 
+  function navigate(next, anchor) {
+    setNavOpen(false);
+    onNavigate(next, anchor);
+  }
+
   function openAccount(next) {
     setAccountOpen(false);
+    setNavOpen(false);
     onNavigate(next);
   }
 
@@ -117,7 +141,6 @@ export default function Header({
           </div>
           <p className="help-bar-call">
             <span>{text.helpBar}</span>
-            <a href="tel:1195">1195</a>
             <button type="button" className="bar-button bar-button-help" onClick={onHelp}>
               {text.help}
             </button>
@@ -125,25 +148,40 @@ export default function Header({
         </div>
       </div>
       <div className="header-inner">
-        <button type="button" className="brand" aria-label="Nia home" onClick={() => onNavigate("home")}>
+        <button type="button" className="brand" aria-label="Nia home" onClick={() => navigate("home")}>
           <img src="/images/logo.png" alt="" />
         </button>
 
-        <div className="header-actions">
-          <nav className="site-nav" aria-label="Primary">
-            {text.nav.map((item) => (
+        <button
+          ref={navToggleRef}
+          type="button"
+          className="nav-toggle"
+          aria-expanded={navOpen}
+          aria-controls={navPanelId}
+          aria-label={navOpen ? text.menuClose : text.menu}
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          {navOpen ? <CloseIcon /> : <MenuBarsIcon />}
+        </button>
+
+        <nav id={navPanelId} className={`site-nav${navOpen ? " is-open" : ""}`} aria-label="Primary">
+          {text.nav.map((item) =>
+            item.id === "rights" ? (
+              <RightsNav key={item.id} item={item} text={text} view={view} onNavigate={navigate} />
+            ) : (
               <button
                 key={item.id}
                 type="button"
                 className="nav-button"
                 aria-current={view === item.id ? "page" : undefined}
-                onClick={() => onNavigate(item.id)}
+                onClick={() => navigate(item.id)}
               >
                 {item.label}
               </button>
-            ))}
-          </nav>
-          {authReady && (
+            ),
+          )}
+        </nav>
+        {authReady && (
             <div className="account-nav">
               {user ? (
                 <div className="account-menu" ref={accountRef}>
@@ -191,16 +229,6 @@ export default function Header({
                         type="button"
                         className="account-item"
                         role="menuitem"
-                        aria-current={view === "consent" ? "page" : undefined}
-                        onClick={() => openAccount("consent")}
-                      >
-                        <PenIcon />
-                        {text.consent}
-                      </button>
-                      <button
-                        type="button"
-                        className="account-item"
-                        role="menuitem"
                         onClick={askLogout}
                       >
                         <LogoutIcon />
@@ -215,7 +243,7 @@ export default function Header({
                     type="button"
                     className="nav-button"
                     aria-current={view === "login" ? "page" : undefined}
-                    onClick={() => onNavigate("login")}
+                    onClick={() => navigate("login")}
                   >
                     {text.logIn}
                   </button>
@@ -223,7 +251,7 @@ export default function Header({
                     type="button"
                     className="button button-accent account-signup"
                     aria-current={view === "signup" ? "page" : undefined}
-                    onClick={() => onNavigate("signup")}
+                    onClick={() => navigate("signup")}
                   >
                     {text.signUp}
                   </button>
@@ -231,7 +259,6 @@ export default function Header({
               )}
             </div>
           )}
-        </div>
       </div>
       {confirmLogout && (
         <div className="logout-layer">
@@ -262,6 +289,136 @@ export default function Header({
   );
 }
 
+function hoverCapable() {
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
+function RightsNav({ item, text, view, onNavigate }) {
+  const rootRef = useRef(null);
+  const buttonRef = useRef(null);
+  const menuId = useId();
+  const closeTimer = useRef(null);
+  const [open, setOpen] = useState(false);
+
+  function show() {
+    clearTimeout(closeTimer.current);
+    setOpen(true);
+  }
+
+  function hide() {
+    clearTimeout(closeTimer.current);
+    setOpen(false);
+  }
+
+  function hideSoon() {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 140);
+  }
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [view, text]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) hide();
+    };
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      hide();
+      buttonRef.current?.focus();
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  function openSection(anchor) {
+    hide();
+    onNavigate("rights", anchor);
+  }
+
+  function onButtonKeyDown(event) {
+    if (event.key !== "ArrowDown") return;
+    event.preventDefault();
+    show();
+    requestAnimationFrame(() => {
+      rootRef.current?.querySelector("[role='menuitem']")?.focus();
+    });
+  }
+
+  function onItemKeyDown(event) {
+    const items = [...rootRef.current.querySelectorAll("[role='menuitem']")];
+    const index = items.indexOf(event.currentTarget);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      items[(index + 1) % items.length]?.focus();
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      items[(index - 1 + items.length) % items.length]?.focus();
+    }
+  }
+
+  return (
+    <div
+      className="nav-menu"
+      ref={rootRef}
+      onMouseEnter={() => {
+        if (hoverCapable()) show();
+      }}
+      onMouseLeave={() => {
+        if (hoverCapable()) hideSoon();
+      }}
+      onBlur={(event) => {
+        if (!rootRef.current?.contains(event.relatedTarget)) hide();
+      }}
+    >
+      <button
+        ref={buttonRef}
+        type="button"
+        className="nav-button"
+        aria-current={view === item.id ? "page" : undefined}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-controls={menuId}
+        onClick={() => {
+          if (!hoverCapable()) {
+            setOpen((value) => !value);
+            return;
+          }
+          openSection();
+        }}
+        onKeyDown={onButtonKeyDown}
+      >
+        {item.label}
+        <ChevronIcon />
+      </button>
+      {open ? (
+        <div className="nav-dropdown" id={menuId} role="menu">
+          {text.rightsMenu.map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              className="nav-item"
+              role="menuitem"
+              onClick={() => openSection(entry.id)}
+              onKeyDown={onItemKeyDown}
+            >
+              {entry.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function MenuIcon({ children }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -288,15 +445,6 @@ function GearIcon() {
   );
 }
 
-function PenIcon() {
-  return (
-    <MenuIcon>
-      <path d="M4.5 16.8 15.2 6.1a1.6 1.6 0 0 1 2.3 0l.4.4a1.6 1.6 0 0 1 0 2.3L7.2 19.5 4 20l.5-3.2z" />
-      <path d="M13.6 7.7l2.7 2.7" />
-    </MenuIcon>
-  );
-}
-
 function LogoutIcon() {
   return (
     <MenuIcon>
@@ -314,6 +462,22 @@ function LeaveIcon() {
       <path d="M28 8v40" stroke="currentColor" strokeWidth="2" />
       <path d="M46 28h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <path d="M58 21.5 65 28l-7 6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function MenuBarsIcon() {
+  return (
+    <svg className="nav-toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 8h16M4 16h16" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg className="nav-toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );
 }

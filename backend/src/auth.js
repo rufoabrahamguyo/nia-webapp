@@ -5,6 +5,7 @@ import { consentIsCurrent } from "./consent.js";
 
 const COOKIE = "nia_session";
 const ADMIN_COOKIE = "nia_admin";
+const SUPPORT_COOKIE = "nia_support";
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 const ADMIN_SESSION = 12 * 60 * 60 * 1000;
 
@@ -58,7 +59,7 @@ export function clearSession(res) {
 
 export function readUserId(req) {
   const payload = readToken(req.cookies?.[COOKIE]);
-  if (!payload || payload.kind === "admin") return null;
+  if (!payload || payload.kind === "admin" || payload.kind === "support") return null;
   return payload.sub || null;
 }
 
@@ -74,6 +75,21 @@ export function clearAdminSession(res) {
 export function readAdminId(req) {
   const payload = readToken(req.cookies?.[ADMIN_COOKIE]);
   if (!payload || payload.kind !== "admin") return null;
+  return payload.sub || null;
+}
+
+export function signSupportSession(res, userId) {
+  const token = jwt.sign({ sub: String(userId), kind: "support" }, process.env.JWT_SECRET, { expiresIn: "12h" });
+  res.cookie(SUPPORT_COOKIE, token, cookieOptions(ADMIN_SESSION));
+}
+
+export function clearSupportSession(res) {
+  res.clearCookie(SUPPORT_COOKIE, cookieBase());
+}
+
+export function readSupportId(req) {
+  const payload = readToken(req.cookies?.[SUPPORT_COOKIE]);
+  if (!payload || payload.kind !== "support") return null;
   return payload.sub || null;
 }
 

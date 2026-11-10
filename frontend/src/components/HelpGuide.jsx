@@ -2,7 +2,7 @@ export default function HelpGuide({ sections, layout = "topics", onOpen }) {
   return (
     <div className={`story-grid story-grid-${layout}`}>
       {sections.map((section) => (
-        <article className="story-card" key={section.title}>
+        <article className="story-card" id={section.id || undefined} key={section.id || section.title}>
           <h3>{section.title}</h3>
           {section.body ? <p>{section.body}</p> : null}
           {section.points ? (

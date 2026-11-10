@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { requestAuth } from "../auth.js";
+import { mentionsCrisis } from "../crisis.js";
 import ButtonIcon from "./ButtonIcon.jsx";
 import PasscodePad from "./PasscodePad.jsx";
 
@@ -113,6 +114,36 @@ function CalendarGlyph() {
 
 function unlockHeaders(token) {
   return token ? { "X-Record-Unlock": token } : undefined;
+}
+
+function CrisisHelp({ copy, onOpen, urgent, quiet }) {
+  if (!urgent && !quiet) return null;
+  if (!urgent) {
+    return (
+      <p className="diary-care">
+        {copy.careLine} <a href="tel:0722178177">{copy.careCall}</a>
+      </p>
+    );
+  }
+  return (
+    <aside className="diary-crisis" role="note">
+      <p>{copy.crisisLead}</p>
+      <div className="diary-crisis-links">
+        <a href="tel:0722178177">{copy.crisisBefrienders}</a>
+        <a href="https://wa.me/254722178177" target="_blank" rel="noreferrer">
+          {copy.crisisWhatsApp}
+        </a>
+        <a href="tel:1190">{copy.crisisCounsel}</a>
+        <a href="tel:999">{copy.crisisCall999}</a>
+        <a href="tel:112">{copy.crisisCall112}</a>
+        <a href="tel:116">{copy.crisisChild}</a>
+        <button type="button" onClick={() => onOpen("helplines")}>
+          {copy.crisisMore}
+        </button>
+      </div>
+      <p className="diary-crisis-note">{copy.crisisDanger}</p>
+    </aside>
+  );
 }
 
 export default function PrivateRecord({ user, text, language, onOpen }) {
@@ -596,6 +627,7 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
         </header>
         {selected && selectedParts ? (
           <div className="diary-entry-main">
+            <CrisisHelp copy={copy} onOpen={onOpen} urgent={mentionsCrisis(selected.body)} />
             <p className="diary-when">{longDate(selected.updatedAt, language)}</p>
             <h3 className="diary-title">{selectedParts.title}</h3>
             {selected.edited ? <span className="diary-edited">{copy.edited}</span> : null}
@@ -690,6 +722,9 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
           </p>
         ) : null}
         <form onSubmit={onSubmit}>
+          <div className="diary-care-slot" aria-live="polite">
+            <CrisisHelp copy={copy} onOpen={onOpen} urgent={mentionsCrisis(body)} quiet />
+          </div>
           <label className="diary-field">
             <span>{editingId ? copy.editTitle : copy.title}</span>
             <textarea

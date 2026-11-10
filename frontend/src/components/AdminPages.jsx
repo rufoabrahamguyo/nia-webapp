@@ -15,7 +15,7 @@ function draftsFor(pages, pageKey) {
 }
 
 function blankSection() {
-  return { title: "", body: "", pointsText: "", actionId: "", actionAnchor: "", actionLabel: "" };
+  return { id: "", title: "", body: "", pointsText: "", actionId: "", actionAnchor: "", actionLabel: "" };
 }
 
 function SectionFields({ text, section, onChange, onRemove }) {

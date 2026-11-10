@@ -7,10 +7,12 @@ import Story from "../models/Story.js";
 import User from "../models/User.js";
 import { avatarId, randomAvatar } from "../avatars.js";
 import { CONSENT_VERSION, consentIsCurrent, readSignature } from "../consent.js";
+import { openText, sealText } from "../recordCrypto.js";
 import { generateUsername, normalizeUsername, usernameError } from "../username.js";
 import {
   clearAdminSession,
   clearSession,
+  clearSupportSession,
   hashPassword,
   passwordMatches,
   publicUser,
@@ -105,7 +107,7 @@ router.post("/login", async (req, res) => {
   const password = String(req.body?.password || "");
   const user = await User.findOne({ email }).select("+passwordHash");
   const matches = await passwordMatches(password, user?.passwordHash || unusedPasswordHash());
-  if (!user?.passwordHash || !matches || user.role === "admin") {
+  if (!user?.passwordHash || !matches || user.role !== "visitor") {
     sendError(res, 401, "invalid_credentials");
     return;
   }
@@ -147,7 +149,7 @@ router.get("/google/callback", async (req, res) => {
   }
 
   const byGoogle = await User.findOne({ googleId: identity.googleId });
-  if (byGoogle?.role === "admin") {
+  if (byGoogle && byGoogle.role !== "visitor") {
     redirectHome(res, { auth_error: "google_failed" });
     return;
   }
@@ -161,7 +163,7 @@ router.get("/google/callback", async (req, res) => {
   }
 
   const byEmail = await User.findOne({ email: identity.email });
-  if (byEmail?.role === "admin") {
+  if (byEmail && byEmail.role !== "visitor") {
     redirectHome(res, { auth_error: "google_failed" });
     return;
   }
@@ -219,7 +221,7 @@ router.post("/avatar", async (req, res) => {
     return;
   }
   const user = await User.findById(userId);
-  if (!user || user.role === "admin" || user.deactivatedAt) {
+  if (!user || user.role !== "visitor" || user.deactivatedAt) {
     clearSession(res);
     sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return;
@@ -236,7 +238,7 @@ router.post("/username", async (req, res) => {
     return;
   }
   const user = await User.findById(userId);
-  if (!user || user.role === "admin" || user.deactivatedAt) {
+  if (!user || user.role !== "visitor" || user.deactivatedAt) {
     clearSession(res);
     sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return;
@@ -291,7 +293,7 @@ async function loadOwner(req, res) {
     return null;
   }
   const user = await User.findById(userId).select("+passwordHash");
-  if (!user || user.role === "admin") {
+  if (!user || user.role !== "visitor") {
     clearSession(res);
     sendError(res, 401, "invalid_credentials");
     return null;
@@ -358,6 +360,7 @@ router.post("/delete", async (req, res) => {
 router.post("/logout", (_req, res) => {
   clearSession(res);
   clearAdminSession(res);
+  clearSupportSession(res);
   clearGooglePending(res);
   res.json({ ok: true });
 });
@@ -368,18 +371,18 @@ router.get("/consent", async (req, res) => {
     sendError(res, 401, "invalid_credentials");
     return;
   }
-  const user = await User.findById(userId).select("+consentSignature");
-  if (!user || user.role === "admin" || user.deactivatedAt) {
+  const user = await User.findById(userId).select("+consentSignatureSealed");
+  if (!user || user.role !== "visitor" || user.deactivatedAt) {
     clearSession(res);
     sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return;
   }
-  const signed = consentIsCurrent(user) && Boolean(user.consentSignature);
+  const signed = consentIsCurrent(user) && Boolean(user.consentSignatureSealed);
   res.set("Cache-Control", "no-store");
   res.json({
     signed,
     signedAt: signed ? user.consentSignedAt : null,
-    signature: signed ? user.consentSignature : "",
+    signature: signed ? openText(user.consentSignatureSealed, user._id) : "",
   });
 });
 
@@ -389,19 +392,20 @@ router.post("/consent", async (req, res) => {
     sendError(res, 401, "invalid_credentials");
     return;
   }
+  const agreed = req.body?.agreed === true;
   const signature = readSignature(req.body?.signature);
-  if (!signature) {
+  if (!agreed && !signature) {
     sendError(res, 400, "signature_invalid");
     return;
   }
-  const user = await User.findById(userId).select("+consentSignature");
+  const user = await User.findById(userId).select("+consentSignatureSealed");
   if (!user || user.role !== "visitor" || user.deactivatedAt) {
     sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return;
   }
   user.consentVersion = CONSENT_VERSION;
   user.consentSignedAt = new Date();
-  user.consentSignature = signature;
+  user.consentSignatureSealed = sealText(agreed ? `agreed:${CONSENT_VERSION}` : signature, user._id);
   await user.save();
   res.json(publicUser(user));
 });
@@ -413,7 +417,7 @@ router.get("/me", async (req, res) => {
     return;
   }
   const user = await User.findById(userId);
-  if (!user || user.role === "admin" || user.deactivatedAt) {
+  if (!user || user.role !== "visitor" || user.deactivatedAt) {
     clearSession(res);
     sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
     return;

@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     username: { type: String, required: true, unique: true, lowercase: true, trim: true },
     usernameKind: { type: String, required: true, enum: ["anonymous", "chosen"] },
     avatar: { type: String, enum: AVATAR_IDS, default: "cat" },
-    role: { type: String, required: true, enum: ["visitor", "admin"], default: "visitor" },
+    role: { type: String, required: true, enum: ["visitor", "admin", "support"], default: "visitor" },
     hasPassword: { type: Boolean, default: false },
     deactivatedAt: { type: Date },
     recordPasscodeHash: { type: String, select: false },
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     recordPasscodeLockedUntil: { type: Date, select: false },
     consentVersion: { type: String, default: "" },
     consentSignedAt: { type: Date },
-    consentSignature: { type: String, select: false },
+    consentSignatureSealed: { type: String, select: false, maxlength: 180000 },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );

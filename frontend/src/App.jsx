@@ -4,15 +4,18 @@ import copy from "./copy.js";
 import { applyPage } from "./pages.js";
 import { leaveSite } from "./scroll.js";
 import Account from "./components/Account.jsx";
+import AppSupport from "./components/AppSupport.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
-import Consent from "./components/Consent.jsx";
+import ConsentDialog, { clearConsentPending, consentPromptPending, markConsentPending } from "./components/Consent.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import HelpLine from "./components/HelpLine.jsx";
 import Helplines from "./components/Helplines.jsx";
 import Home from "./components/Home.jsx";
 import NiaChat from "./components/NiaChat.jsx";
+import ReferralPathways from "./components/ReferralPathways.jsx";
 import Reminder from "./components/Reminder.jsx";
+import ReportButton from "./components/ReportButton.jsx";
 import Screen from "./components/Screen.jsx";
 
 export default function App() {
@@ -28,6 +31,7 @@ export default function App() {
   const [scrollKey, setScrollKey] = useState(0);
   const [user, setUser] = useState(null);
   const [authReady, setAuthReady] = useState(false);
+  const [consentOpen, setConsentOpen] = useState(false);
   const [authError] = useState(
     () => new URLSearchParams(window.location.search).get("auth_error") || "",
   );
@@ -44,6 +48,10 @@ export default function App() {
   }, [view, anchor, scrollKey]);
 
   function open(next, nextAnchor) {
+    if (next === "consent") {
+      setConsentOpen(true);
+      return;
+    }
     if (next === "support-someone") {
       setView("learn");
       setAnchor("guide-title");
@@ -99,6 +107,21 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!authReady || !user) return;
+    if (user.consentSigned) {
+      clearConsentPending();
+      setConsentOpen(false);
+      return;
+    }
+    if (consentPromptPending()) setConsentOpen(true);
+  }, [authReady, user]);
+
+  function closeConsent() {
+    clearConsentPending();
+    setConsentOpen(false);
+  }
+
   async function logout() {
     try {
       await requestAuth("/api/auth/logout", {});
@@ -133,21 +156,21 @@ export default function App() {
             onSwitch={() => open(view === "login" ? "signup" : "login")}
             onSuccess={(next) => {
               setUser(next);
-              open(next.consentSigned ? "home" : "consent");
+              if (!next.consentSigned) {
+                markConsentPending();
+                setConsentOpen(true);
+              }
+              open("home");
             }}
           />
         ) : view === "home" ? (
           <Home text={text} onOpen={open} />
         ) : view === "helplines" ? (
           <Helplines language={language} text={text} />
-        ) : view === "consent" ? (
-          <Consent
-            text={text}
-            user={user}
-            language={language}
-            onNavigate={open}
-            onSigned={setUser}
-          />
+        ) : view === "referral" ? (
+          <ReferralPathways text={text} />
+        ) : view === "support" ? (
+          <AppSupport text={text} user={user} language={language} onOpen={open} />
         ) : view === "chat" ? (
           <NiaChat text={text} user={user} language={language} onOpen={open} />
         ) : view === "profile" || view === "settings" ? (
@@ -180,6 +203,10 @@ export default function App() {
         {view === "home" && <Reminder key={language} text={text} />}
       </main>
       {!isAuth && <Footer text={text} onNavigate={open} />}
+      {consentOpen && user && !user.consentSigned ? (
+        <ConsentDialog text={text} onClose={closeConsent} onSigned={setUser} />
+      ) : null}
+      <ReportButton text={text} user={user} onOpen={open} />
     </div>
   );
 }

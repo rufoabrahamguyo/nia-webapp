@@ -107,14 +107,39 @@ function Reactions({ items, labels, pending, onReact }) {
   );
 }
 
-function Author({ name, avatar, when, status }) {
+function VerifiedMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5.5 12.5l4 4 9-9" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Author({ name, avatar, when, status, verified, verifiedLabel }) {
   return (
     <p className="record-when chat-author">
-      <span className="chat-face"><AnimalFace id={avatar} /></span>
+      <span className={verified ? "chat-face chat-face-verified" : "chat-face"}>
+        {verified ? <VerifiedMark /> : <AnimalFace id={avatar} />}
+      </span>
       <span>{name}</span>
+      {verified ? <span className="chat-verified">{verifiedLabel}</span> : null}
       {when ? <span>{when}</span> : null}
       {status}
     </p>
+  );
+}
+
+function SupportCard({ copy, onOpen }) {
+  return (
+    <aside className="chat-support">
+      <p>{copy.supportLead}</p>
+      <div className="chat-support-links">
+        <a className="button button-accent" href="tel:1190">{copy.supportCounsel}</a>
+        <a className="button button-secondary" href="tel:1195">{copy.supportLine}</a>
+        <button type="button" className="next-link" onClick={() => onOpen("helplines")}>{copy.supportMore}</button>
+      </div>
+      <p className="fine">{copy.supportDanger}</p>
+    </aside>
   );
 }
 
@@ -127,7 +152,7 @@ function formatWhen(value, language) {
   }).format(date);
 }
 
-function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, onDelete, onComment, onReport, onReportComment, onReact, onReactComment }) {
+function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, onOpen, onDelete, onComment, onReport, onReportComment, onReact, onReactComment }) {
   return (
     <div className="chat-list">
       {stories.map((story) => (
@@ -136,6 +161,7 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
             name={story.authorName}
             avatar={story.authorAvatar}
             when={formatWhen(story.createdAt, language)}
+            verifiedLabel={copy.verified}
             status={
               <>
                 {story.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
@@ -144,6 +170,7 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
             }
           />
           <p className="record-body">{story.body}</p>
+          {story.support ? <SupportCard copy={copy} onOpen={onOpen} /> : null}
           {story.status === "allowed" || story.mine ? (
             <div className="chat-tools">
               {story.status === "allowed" ? (
@@ -181,11 +208,13 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
           {story.comments?.length ? (
             <ul className="chat-comments">
               {story.comments.map((comment) => (
-                <li key={comment.id}>
+                <li key={comment.id} className={comment.staff ? "chat-staff" : undefined}>
                   <Author
                     name={comment.authorName}
                     avatar={comment.authorAvatar}
                     when=""
+                    verified={comment.staff}
+                    verifiedLabel={copy.verified}
                     status={
                       <>
                         {comment.status === "pending" ? <span className="chat-status">{copy.waiting}</span> : null}
@@ -194,6 +223,7 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
                     }
                   />
                   <p>{comment.body}</p>
+                  {comment.support ? <SupportCard copy={copy} onOpen={onOpen} /> : null}
                   {comment.status === "allowed" ? (
                     <div className="chat-tools">
                       <Reactions
@@ -202,7 +232,7 @@ function StoryList({ stories, copy, language, pending, confirmId, setConfirmId, 
                         pending={pending}
                         onReact={(emoji) => onReactComment(story.id, comment.id, emoji)}
                       />
-                      {!comment.mine ? (
+                      {!comment.mine && !comment.staff ? (
                         <ReportFlag
                           id={`c:${comment.id}`}
                           reported={comment.reported}
@@ -305,7 +335,7 @@ export default function NiaChat({ text, user, language, onOpen }) {
       if (story.status === "allowed") setStories((list) => [story, ...list]);
       else setMine((list) => [story, ...list]);
       setBody("");
-      setSaved(story.status === "pending" ? "held" : "posted");
+      setSaved(story.status === "pending" ? "held" : story.support ? "support" : "posted");
     } catch (caught) {
       setErrorCode(caught.code || "request_failed");
     } finally {
@@ -478,6 +508,7 @@ export default function NiaChat({ text, user, language, onOpen }) {
                 </p>
               ) : null}
               {saved === "posted" ? <p className="account-saved">{copy.submitted}</p> : null}
+              {saved === "support" ? <p className="account-saved">{copy.supportPosted}</p> : null}
               {saved === "held" ? <p className="account-saved">{copy.submittedHeld}</p> : null}
               <button type="submit" className="button button-accent" disabled={pending}>
                 {pending ? copy.submitting : copy.submit}
@@ -493,6 +524,7 @@ export default function NiaChat({ text, user, language, onOpen }) {
                   pending={pending}
                   confirmId={confirmId}
                   setConfirmId={setConfirmId}
+                  onOpen={onOpen}
                   onDelete={removeStory}
                   onComment={addComment}
                   onReport={reportStory}
@@ -510,6 +542,7 @@ export default function NiaChat({ text, user, language, onOpen }) {
                 pending={pending}
                 confirmId={confirmId}
                 setConfirmId={setConfirmId}
+                onOpen={onOpen}
                 onDelete={removeStory}
                 onComment={addComment}
                 onReport={reportStory}

@@ -1,8 +1,10 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { clearAdminSession, passwordMatches, signAdminSession, unusedPasswordHash } from "../auth.js";
+import { holdReasonFor } from "../chatSafety.js";
 import { checkedDate, httpsUrl, localeJson, optionalText, pair, phoneList, readLocale } from "../content.js";
 import { requireAdmin } from "../guards.js";
+import { openText, sealText } from "../recordCrypto.js";
 import AuditLog from "../models/AuditLog.js";
 import Comment from "../models/Comment.js";
 import Helpline from "../models/Helpline.js";
@@ -18,11 +20,12 @@ function sendError(res, status, error) {
 }
 
 async function writeAudit(admin, action, summary) {
+  const text = summary.slice(0, 200);
   await AuditLog.create({
     actorId: admin._id,
     actorEmail: admin.email,
     action,
-    summary: summary.slice(0, 200),
+    sealed: sealText(text, admin._id),
   });
 }
 
@@ -195,15 +198,16 @@ function chatStoryJson(story, comments) {
   return {
     id: String(story._id),
     authorName: story.authorName,
-    body: story.body,
+    body: openText(story.sealed, story.userId),
     createdAt: story.createdAt,
     queueAt: story.queueAt || story.createdAt,
     ...chatFields(story),
     comments: comments.map((comment) => ({
       id: String(comment._id),
       authorName: comment.authorName,
-      body: comment.body,
+      body: openText(comment.sealed, comment.userId),
       createdAt: comment.createdAt,
+      staff: Boolean(comment.staff),
       ...chatFields(comment),
     })),
   };
@@ -255,6 +259,7 @@ router.get("/chat", async (req, res) => {
     list.push(comment);
     grouped.set(key, list);
   }
+  res.set("Cache-Control", "private, no-store");
   res.json({
     stories: stories.map((story) => chatStoryJson(story, grouped.get(String(story._id)) || [])),
     hasMore,
@@ -325,6 +330,67 @@ router.post("/chat/comments/:id", async (req, res) => {
   res.json({ id: String(comment._id), ...chatFields(comment) });
 });
 
+const STAFF_NAME = "Nia";
+const STAFF_LINES = {
+  en: "Nia cannot counsel in this chat. For counselling, call 1190. For support after sexual and gender-based violence, call 1195. If you are in danger, call 999 or 112. The Helplines page lists more checked lines.",
+  sw: "Nia haiwezi kutoa ushauri kwenye mazungumzo haya. Kwa ushauri, piga 1190. Kwa msaada baada ya unyanyasaji wa kijinsia na kingono, piga 1195. Ukiwa hatarini, piga 999 au 112. Ukurasa wa Nambari una nambari zilizokaguliwa.",
+};
+
+function staffReplyText(body) {
+  if (body?.lines === true) return STAFF_LINES[body.language === "sw" ? "sw" : "en"];
+  const text = String(body?.body || "").replace(/\u0000/g, "").trim();
+  if (!text || text.length > 1000) return { error: "invalid_chat" };
+  if (holdReasonFor(text) === "blocked_word") return { error: "chat_blocked" };
+  return text;
+}
+
+router.post("/chat/stories/:id/reply", async (req, res) => {
+  const admin = await requireAdmin(req, res);
+  if (!admin) return;
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    sendError(res, 400, "invalid_chat");
+    return;
+  }
+  const story = await Story.findById(req.params.id);
+  if (!story || story.status === "hidden") {
+    sendError(res, 404, "chat_missing");
+    return;
+  }
+  const text = staffReplyText(req.body);
+  if (text?.error) {
+    sendError(res, 400, text.error);
+    return;
+  }
+  const count = await Comment.countDocuments({ storyId: story._id });
+  if (count >= 100) {
+    sendError(res, 400, "chat_limit");
+    return;
+  }
+  await Comment.create({
+    storyId: story._id,
+    userId: admin._id,
+    authorName: STAFF_NAME,
+    sealed: sealText(text, admin._id),
+    staff: true,
+    status: "allowed",
+    needsReview: false,
+    holdReason: "",
+  });
+  if (story.holdReason === "support") {
+    story.needsReview = false;
+    story.holdReason = "";
+    await story.save();
+  }
+  await Comment.updateMany(
+    { storyId: story._id, holdReason: "support" },
+    { $set: { needsReview: false, holdReason: "" } },
+  );
+  const comments = await Comment.find({ storyId: story._id }).sort({ createdAt: 1 });
+  await writeAudit(admin, "chat.story.reply", "Replied in NiaChat");
+  res.set("Cache-Control", "private, no-store");
+  res.status(201).json(chatStoryJson(story, comments));
+});
+
 router.get("/audit", async (req, res) => {
   const admin = await requireAdmin(req, res);
   if (!admin) return;
@@ -333,12 +399,13 @@ router.get("/audit", async (req, res) => {
   if (Number.isFinite(before)) query.createdAt = { $lt: new Date(before) };
   const found = await AuditLog.find(query).sort({ createdAt: -1 }).limit(41);
   const hasMore = found.length > 40;
+  res.set("Cache-Control", "private, no-store");
   res.json({
     entries: found.slice(0, 40).map((entry) => ({
       id: String(entry._id),
       actorEmail: entry.actorEmail,
       action: entry.action,
-      summary: entry.summary,
+      summary: openText(entry.sealed, entry.actorId),
       createdAt: entry.createdAt,
     })),
     hasMore,

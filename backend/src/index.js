@@ -9,9 +9,9 @@ import { requireSecret } from "./auth.js";
 import { avatarForKey } from "./avatars.js";
 import { releaseLegacyQueue } from "./chatQueue.js";
 import User from "./models/User.js";
-import { requireRecordKey, sealLegacyRecords } from "./recordCrypto.js";
+import { requireRecordKey, sealStoredText } from "./recordCrypto.js";
 import { connectDb } from "./db.js";
-import { ensureAdmin, seedHelplines } from "./seed.js";
+import { ensureAdmin, ensureSupport, seedHelplines } from "./seed.js";
 import adminRoutes from "./routes/admin.js";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chat.js";
@@ -19,6 +19,7 @@ import helplineRoutes from "./routes/helplines.js";
 import nearbyRoutes from "./routes/nearby.js";
 import pageRoutes from "./routes/pages.js";
 import recordRoutes from "./routes/records.js";
+import supportRoutes from "./routes/support.js";
 
 const port = Number(process.env.PORT || 4000);
 const app = express();
@@ -96,6 +97,27 @@ app.use(
   }),
 );
 app.use("/api/admin", adminRoutes);
+app.use(
+  "/api/support/login",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "request_failed" },
+  }),
+);
+app.use(
+  "/api/support",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 40,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "request_failed" },
+  }),
+);
+app.use("/api/support", supportRoutes);
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
@@ -120,7 +142,7 @@ if (existsSync(path.join(dist, "index.html"))) {
 requireSecret();
 requireRecordKey();
 await connectDb(process.env.MONGODB_URI);
-await sealLegacyRecords();
+await sealStoredText();
 await releaseLegacyQueue();
 const missingAvatars = await User.find({
   $or: [{ avatar: { $exists: false } }, { avatar: null }, { avatar: "" }],
@@ -132,6 +154,7 @@ await User.updateMany(
 );
 await seedHelplines();
 await ensureAdmin();
+await ensureSupport();
 app.listen(port, () => {
   console.log(`API listening on ${port}`);
 });

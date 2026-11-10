@@ -1,7 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { moderationFields } from "../chatSafety.js";
+import { asksForCounsellor, moderationFields, withSupportReview } from "../chatSafety.js";
 import { requireConsent, requireVisitor } from "../guards.js";
+import { openText, sealText } from "../recordCrypto.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import Report from "../models/Report.js";
@@ -27,30 +28,39 @@ function cleanBody(value, max) {
   return { body };
 }
 
+function textOf(doc) {
+  return openText(doc.sealed, doc.userId);
+}
+
 function storyJson(story, userId, reported, avatar = "cat", reactions = []) {
+  const body = textOf(story);
   return {
     id: String(story._id),
     authorName: story.authorName,
     authorAvatar: avatar || "cat",
-    body: story.body,
+    body,
     status: story.status,
     createdAt: story.createdAt,
     mine: String(story.userId) === String(userId),
     reported: Boolean(reported),
+    support: asksForCounsellor(body),
     reactions,
   };
 }
 
 function commentJson(comment, userId, reported, avatar = "cat", reactions = []) {
+  const body = textOf(comment);
   return {
     id: String(comment._id),
     authorName: comment.authorName,
     authorAvatar: avatar || "cat",
-    body: comment.body,
+    body,
     status: comment.status,
     createdAt: comment.createdAt,
     mine: String(comment.userId) === String(userId),
     reported: Boolean(reported),
+    staff: Boolean(comment.staff),
+    support: comment.staff ? false : asksForCounsellor(body),
     reactions,
   };
 }
@@ -189,8 +199,8 @@ router.post("/stories", async (req, res) => {
   const story = await Story.create({
     userId: user._id,
     authorName: user.username,
-    body: parsed.body,
-    ...moderationFields(parsed.body),
+    sealed: sealText(parsed.body, user._id),
+    ...withSupportReview(parsed.body, moderationFields(parsed.body)),
   });
   res.status(201).json({ ...storyJson(story, user._id, false, user.avatar), comments: [] });
 });
@@ -240,6 +250,10 @@ async function hideIfReported(model, id, isComment) {
 
 async function addReport(res, user, targetType, doc) {
   if (!doc || doc.status !== "allowed") {
+    sendError(res, 404, "chat_missing");
+    return;
+  }
+  if (doc.staff) {
     sendError(res, 404, "chat_missing");
     return;
   }
@@ -294,12 +308,12 @@ router.post("/stories/:id/comments", async (req, res) => {
     sendError(res, 400, "chat_limit");
     return;
   }
-  const fields = moderationFields(parsed.body);
+  const fields = withSupportReview(parsed.body, moderationFields(parsed.body));
   const comment = await Comment.create({
     storyId: story._id,
     userId: user._id,
     authorName: user.username,
-    body: parsed.body,
+    sealed: sealText(parsed.body, user._id),
     ...fields,
   });
   if (fields.needsReview) {
@@ -373,7 +387,7 @@ router.post("/comments/:id/report", async (req, res) => {
     sendError(res, 404, "chat_missing");
     return;
   }
-  const comment = await Comment.findById(req.params.id).select("_id userId status storyId");
+  const comment = await Comment.findById(req.params.id).select("_id userId status storyId staff");
   await addReport(res, user, "comment", comment);
 });
 

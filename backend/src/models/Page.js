@@ -11,6 +11,7 @@ const actionSchema = new mongoose.Schema(
 
 const sectionSchema = new mongoose.Schema(
   {
+    id: { type: String, default: "", maxlength: 40 },
     title: { type: String, required: true, maxlength: 200 },
     body: { type: String, default: "", maxlength: 8000 },
     points: { type: [String], default: [] },

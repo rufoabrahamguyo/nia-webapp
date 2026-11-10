@@ -70,6 +70,8 @@ function readSection(value) {
   const title = cleanText(value?.title, 200);
   const body = optionalText(value?.body, 8000);
   if (!title || body == null) return null;
+  const id = String(value?.id || "");
+  if (id && !/^[a-z0-9-]{1,40}$/.test(id)) return null;
   const source = Array.isArray(value?.points) ? value.points : [];
   if (source.length > 12) return null;
   const points = [];
@@ -79,6 +81,7 @@ function readSection(value) {
     points.push(text);
   }
   const section = { title, body, points };
+  if (id) section.id = id;
   const action = readAction(value?.action);
   if (action) section.action = action;
   return section;
@@ -131,6 +134,7 @@ export function localeJson(locale) {
 
 function sectionJson(section) {
   return {
+    id: section.id || "",
     title: section.title,
     body: section.body,
     points: section.points || [],

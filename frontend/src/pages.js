@@ -1,5 +1,6 @@
 function sectionToDraft(section) {
   return {
+    id: section.id || "",
     title: section.title || "",
     body: section.body || "",
     pointsText: (section.points || []).join("\n"),
@@ -15,6 +16,7 @@ function sectionToPayload(section) {
     body: section.body.trim(),
     points: section.pointsText.split("\n").map((point) => point.trim()).filter(Boolean),
   };
+  if (/^[a-z0-9-]{1,40}$/.test(section.id || "")) payload.id = section.id;
   if (section.actionId && section.actionLabel.trim()) {
     payload.action = {
       id: section.actionId,
@@ -69,6 +71,7 @@ function sectionForScreen(section) {
     title: section.title,
     body: section.body,
   };
+  if (section.id) next.id = section.id;
   if (section.points?.length) next.points = section.points;
   if (section.action?.id) next.action = section.action;
   return next;

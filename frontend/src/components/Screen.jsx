@@ -34,6 +34,21 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
 
       {hasSections ? (
         <section className="page-band" aria-labelledby="section-title">
+          {id === "learn" ? (
+            <div className="help-video-wrap">
+              <video
+                className="referral-video recognise-video"
+                controls
+                playsInline
+                preload="metadata"
+                poster="/images/recognise-poster.png"
+                src="/videos/recognise-it.mp4"
+                aria-label={screen.title}
+              >
+                {text.referralVideoFallback}
+              </video>
+            </div>
+          ) : null}
           <div className="page-band-intro">
             <h2 id="section-title">{screen.sectionsTitle}</h2>
             <p>{screen.sectionsLede}</p>
@@ -56,6 +71,21 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
             </div>
           </section>
           <section className="page-band">
+            {id === "learn" ? (
+              <div className="help-video-wrap">
+                <video
+                  className="referral-video"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster="/images/help-someone-poster.png"
+                  src="/videos/how-to-help-someone.mp4"
+                  aria-label={screen.guide.title}
+                >
+                  {text.referralVideoFallback}
+                </video>
+              </div>
+            ) : null}
             <HelpGuide sections={screen.guide.sections} layout="guide" onOpen={onOpen} />
             <NextLink screen={screen} onOpen={onOpen} />
           </section>

@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import AdminApp from './components/AdminApp.jsx'
+import SupportApp from './components/SupportApp.jsx'
 
-const admin = window.location.pathname === "/admin" || window.location.pathname.startsWith("/admin/")
+const path = window.location.pathname
+const admin = path === "/admin" || path.startsWith("/admin/")
+const supportDesk = path === "/support" || path.startsWith("/support/")
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {admin ? <AdminApp /> : <App />}
+    {admin ? <AdminApp /> : supportDesk ? <SupportApp /> : <App />}
   </StrictMode>,
 )
