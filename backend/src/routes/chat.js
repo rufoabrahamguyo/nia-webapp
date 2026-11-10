@@ -1,7 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { moderationFields } from "../chatSafety.js";
-import { requireVisitor } from "../guards.js";
+import { requireConsent, requireVisitor } from "../guards.js";
 import Comment from "../models/Comment.js";
 import Reaction from "../models/Reaction.js";
 import Report from "../models/Report.js";
@@ -173,7 +173,7 @@ router.get("/stories", async (req, res) => {
 
 router.post("/stories", async (req, res) => {
   const user = await requireVisitor(req, res);
-  if (!user) return;
+  if (!user || !requireConsent(res, user)) return;
   const parsed = cleanBody(req.body?.body, STORY_MAX);
   if (parsed.error) {
     sendError(res, 400, parsed.error);
@@ -274,7 +274,7 @@ router.post("/stories/:id/report", async (req, res) => {
 
 router.post("/stories/:id/comments", async (req, res) => {
   const user = await requireVisitor(req, res);
-  if (!user) return;
+  if (!user || !requireConsent(res, user)) return;
   if (!mongoose.isValidObjectId(req.params.id)) {
     sendError(res, 404, "chat_missing");
     return;

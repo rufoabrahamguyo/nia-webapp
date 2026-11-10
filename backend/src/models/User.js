@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema(
     recordPasscodeHash: { type: String, select: false },
     recordPasscodeFails: { type: Number, default: 0, select: false },
     recordPasscodeLockedUntil: { type: Date, select: false },
+    consentVersion: { type: String, default: "" },
+    consentSignedAt: { type: Date },
+    consentSignature: { type: String, select: false },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );

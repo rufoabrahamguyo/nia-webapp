@@ -5,6 +5,7 @@ import { applyPage } from "./pages.js";
 import { leaveSite } from "./scroll.js";
 import Account from "./components/Account.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
+import Consent from "./components/Consent.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import HelpLine from "./components/HelpLine.jsx";
@@ -132,13 +133,21 @@ export default function App() {
             onSwitch={() => open(view === "login" ? "signup" : "login")}
             onSuccess={(next) => {
               setUser(next);
-              open("home");
+              open(next.consentSigned ? "home" : "consent");
             }}
           />
         ) : view === "home" ? (
           <Home text={text} onOpen={open} />
         ) : view === "helplines" ? (
           <Helplines language={language} text={text} />
+        ) : view === "consent" ? (
+          <Consent
+            text={text}
+            user={user}
+            language={language}
+            onNavigate={open}
+            onSigned={setUser}
+          />
         ) : view === "chat" ? (
           <NiaChat text={text} user={user} language={language} onOpen={open} />
         ) : view === "profile" || view === "settings" ? (

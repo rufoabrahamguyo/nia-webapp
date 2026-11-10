@@ -448,6 +448,13 @@ export default function NiaChat({ text, user, language, onOpen }) {
               {text.logIn}
             </button>
           </div>
+        ) : !user.consentSigned ? (
+          <div className="record-gate">
+            <p>{copy.needConsent}</p>
+            <button type="button" className="button button-accent" onClick={() => onOpen("consent")}>
+              {copy.openConsent}
+            </button>
+          </div>
         ) : (
           <>
             <form onSubmit={submitStory}>

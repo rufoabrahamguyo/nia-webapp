@@ -191,6 +191,16 @@ export default function Header({
                         type="button"
                         className="account-item"
                         role="menuitem"
+                        aria-current={view === "consent" ? "page" : undefined}
+                        onClick={() => openAccount("consent")}
+                      >
+                        <PenIcon />
+                        {text.consent}
+                      </button>
+                      <button
+                        type="button"
+                        className="account-item"
+                        role="menuitem"
                         onClick={askLogout}
                       >
                         <LogoutIcon />
@@ -274,6 +284,15 @@ function GearIcon() {
     <MenuIcon>
       <path d="M10.1 3.5h3.8l.5 2.2c.5.2 1 .5 1.4.8l2.1-.9 1.9 3.2-1.6 1.6c.1.5.1 1.1 0 1.6l1.6 1.6-1.9 3.2-2.1-.9c-.4.3-.9.6-1.4.8l-.5 2.2h-3.8l-.5-2.2a5.6 5.6 0 0 1-1.4-.8l-2.1.9-1.9-3.2 1.6-1.6a5.8 5.8 0 0 1 0-1.6L4.2 8.8l1.9-3.2 2.1.9c.4-.3.9-.6 1.4-.8l.5-2.2z" />
       <circle cx="12" cy="12" r="2.3" />
+    </MenuIcon>
+  );
+}
+
+function PenIcon() {
+  return (
+    <MenuIcon>
+      <path d="M4.5 16.8 15.2 6.1a1.6 1.6 0 0 1 2.3 0l.4.4a1.6 1.6 0 0 1 0 2.3L7.2 19.5 4 20l.5-3.2z" />
+      <path d="M13.6 7.7l2.7 2.7" />
     </MenuIcon>
   );
 }

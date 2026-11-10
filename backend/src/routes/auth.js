@@ -6,6 +6,7 @@ import Report from "../models/Report.js";
 import Story from "../models/Story.js";
 import User from "../models/User.js";
 import { avatarId, randomAvatar } from "../avatars.js";
+import { CONSENT_VERSION, consentIsCurrent, readSignature } from "../consent.js";
 import { generateUsername, normalizeUsername, usernameError } from "../username.js";
 import {
   clearAdminSession,
@@ -359,6 +360,50 @@ router.post("/logout", (_req, res) => {
   clearAdminSession(res);
   clearGooglePending(res);
   res.json({ ok: true });
+});
+
+router.get("/consent", async (req, res) => {
+  const userId = readUserId(req);
+  if (!userId) {
+    sendError(res, 401, "invalid_credentials");
+    return;
+  }
+  const user = await User.findById(userId).select("+consentSignature");
+  if (!user || user.role === "admin" || user.deactivatedAt) {
+    clearSession(res);
+    sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
+    return;
+  }
+  const signed = consentIsCurrent(user) && Boolean(user.consentSignature);
+  res.set("Cache-Control", "no-store");
+  res.json({
+    signed,
+    signedAt: signed ? user.consentSignedAt : null,
+    signature: signed ? user.consentSignature : "",
+  });
+});
+
+router.post("/consent", async (req, res) => {
+  const userId = readUserId(req);
+  if (!userId) {
+    sendError(res, 401, "invalid_credentials");
+    return;
+  }
+  const signature = readSignature(req.body?.signature);
+  if (!signature) {
+    sendError(res, 400, "signature_invalid");
+    return;
+  }
+  const user = await User.findById(userId).select("+consentSignature");
+  if (!user || user.role !== "visitor" || user.deactivatedAt) {
+    sendError(res, 401, user?.deactivatedAt ? "account_inactive" : "invalid_credentials");
+    return;
+  }
+  user.consentVersion = CONSENT_VERSION;
+  user.consentSignedAt = new Date();
+  user.consentSignature = signature;
+  await user.save();
+  res.json(publicUser(user));
 });
 
 router.get("/me", async (req, res) => {

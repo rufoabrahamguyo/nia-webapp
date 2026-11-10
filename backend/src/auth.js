@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { avatarId } from "./avatars.js";
+import { consentIsCurrent } from "./consent.js";
 
 const COOKIE = "nia_session";
 const ADMIN_COOKIE = "nia_admin";
@@ -42,6 +43,7 @@ export function publicUser(user) {
     avatar: avatarId(user.avatar) || "cat",
     email: user.email,
     hasPassword: Boolean(user.hasPassword),
+    consentSigned: consentIsCurrent(user),
   };
 }
 

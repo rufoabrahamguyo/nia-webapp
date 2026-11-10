@@ -1086,6 +1086,86 @@ h1 {
   --scene: url("/images/document.png");
 }
 
+.page-consent .page-band {
+  max-width: 44rem;
+}
+
+.page-consent h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.page-consent .lede {
+  max-width: 38rem;
+  margin-top: 12px;
+}
+
+.consent-doc {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+  padding: 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.consent-doc h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.consent-doc p {
+  margin-top: 6px;
+}
+
+.consent-gate,
+.consent-sign,
+.consent-signed {
+  margin-top: 24px;
+}
+
+.consent-pad-label {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.consent-pad {
+  display: block;
+  width: 100%;
+  height: 168px;
+  touch-action: none;
+  background: var(--white);
+  border: 1px dashed var(--ink);
+  border-radius: 12px;
+  cursor: crosshair;
+}
+
+.consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.consent-signed img {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  margin: 12px 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.consent-error {
+  color: var(--help);
+}
+
 .page-document .page-hero {
   height: auto;
   min-height: 0;
