@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { requestAuth } from "../auth.js";
 
-export default function ReportForm({ copy, user, titleId, onSignIn, onConsent, onSent }) {
+export default function ReportForm({ copy, user, titleId, onSignIn, onConsent, onSent, tone }) {
   const [checks, setChecks] = useState([]);
   const [note, setNote] = useState("");
   const [pending, setPending] = useState(false);
@@ -38,6 +38,63 @@ export default function ReportForm({ copy, user, titleId, onSignIn, onConsent, o
     } finally {
       setPending(false);
     }
+  }
+
+  if (tone === "page") {
+    return (
+      <>
+        <h1 id={titleId}>{copy.title}</h1>
+        <p className="auth-line">{copy.lede}</p>
+        <p className="auth-line">{copy.notEmergency}</p>
+        {sent ? (
+          <p className="account-saved" role="status">{copy.sent}</p>
+        ) : (
+          <form onSubmit={submit}>
+            <fieldset className="auth-choice">
+              <legend>{copy.askTitle}</legend>
+              <p className="auth-line">{copy.askLine}</p>
+              {copy.checks.map((item) => (
+                <label key={item.id}>
+                  <input type="checkbox" checked={checks.includes(item.id)} onChange={() => toggle(item.id)} />
+                  <span>
+                    <strong>{item.label}</strong>
+                    <span>{item.line}</span>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+            <label className="auth-field">
+              <span>{copy.elseLabel}</span>
+              <textarea
+                rows={4}
+                maxLength={2000}
+                placeholder={copy.elsePlaceholder}
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+              />
+            </label>
+            {error ? <p className="auth-error" role="alert">{error}</p> : null}
+            {!user ? <p className="auth-error">{copy.signIn}</p> : null}
+            {user && !user.consentSigned ? <p className="auth-error">{copy.needConsent}</p> : null}
+            <div className="account-actions">
+              {!user ? (
+                <button type="button" className="button button-accent" onClick={onSignIn}>
+                  {copy.goLogin}
+                </button>
+              ) : !user.consentSigned ? (
+                <button type="button" className="button button-accent" onClick={onConsent}>
+                  {copy.goConsent}
+                </button>
+              ) : (
+                <button type="submit" className="button button-accent" disabled={pending}>
+                  {pending ? copy.sending : copy.submitReport}
+                </button>
+              )}
+            </div>
+          </form>
+        )}
+      </>
+    );
   }
 
   return (

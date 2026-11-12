@@ -36,40 +36,50 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
       {hasSections ? (
         <section className="page-band" aria-labelledby="section-title">
           {id === "learn" ? (
-            <div className="help-video-wrap">
-              <VideoFrame
-                className="recognise-video"
-                src="/videos/recognise-it.mp4"
-                poster="/images/recognise-poster.png"
-                label={screen.title}
-                playLabel={text.referralVideoPlay}
-                fallback={text.referralVideoFallback}
-              />
-            </div>
-          ) : null}
-          <div className="page-band-intro">
-            <h2 id="section-title">{screen.sectionsTitle}</h2>
-            <p>{screen.sectionsLede}</p>
-          </div>
-          {id === "document" ? (
-            <PrivateRecord user={user} text={text} language={language} onOpen={onOpen} />
-          ) : null}
-          <HelpGuide sections={sections} layout={layoutFor(id)} onOpen={onOpen} />
-          {screen.scripts ? <Scripts key={language} scripts={screen.scripts} /> : null}
-          {hasGuide ? null : <NextLink screen={screen} onOpen={onOpen} />}
+            <>
+              <div className="learn-split">
+                <div className="page-band-intro">
+                  <h2 id="section-title">{screen.sectionsTitle}</h2>
+                  <p>{screen.sectionsLede}</p>
+                </div>
+                <div className="help-video-wrap">
+                  <VideoFrame
+                    className="recognise-video"
+                    src="/videos/recognise-it.mp4"
+                    poster="/images/recognise-poster.png"
+                    label={screen.title}
+                    playLabel={text.referralVideoPlay}
+                    fallback={text.referralVideoFallback}
+                  />
+                </div>
+              </div>
+              <HelpGuide sections={sections} layout={layoutFor(id)} onOpen={onOpen} />
+            </>
+          ) : (
+            <>
+              <div className="page-band-intro">
+                <h2 id="section-title">{screen.sectionsTitle}</h2>
+                <p>{screen.sectionsLede}</p>
+              </div>
+              {id === "document" ? (
+                <PrivateRecord user={user} text={text} language={language} onOpen={onOpen} />
+              ) : null}
+              <HelpGuide sections={sections} layout={layoutFor(id)} onOpen={onOpen} />
+              {screen.scripts ? <Scripts key={language} scripts={screen.scripts} /> : null}
+              {hasGuide ? null : <NextLink screen={screen} onOpen={onOpen} />}
+            </>
+          )}
         </section>
       ) : null}
 
       {hasGuide ? (
-        <>
-          <section className="page-hero page-hero-guide" aria-labelledby="guide-title">
-            <div className="page-hero-copy">
-              <h2 id="guide-title">{screen.guide.title}</h2>
-              <p className="lede">{screen.guide.lede}</p>
-            </div>
-          </section>
-          <section className="page-band">
-            {id === "learn" ? (
+        id === "learn" ? (
+          <section className="page-band" aria-labelledby="guide-title">
+            <div className="learn-split">
+              <div className="page-band-intro">
+                <h2 id="guide-title">{screen.guide.title}</h2>
+                <p>{screen.guide.lede}</p>
+              </div>
               <div className="help-video-wrap">
                 <VideoFrame
                   src="/videos/how-to-help-someone.mp4"
@@ -79,18 +89,29 @@ export default function Screen({ id, screen, text, user, language, onOpen }) {
                   fallback={text.referralVideoFallback}
                 />
               </div>
-            ) : null}
+            </div>
             <HelpGuide sections={screen.guide.sections} layout="guide" onOpen={onOpen} />
             <NextLink screen={screen} onOpen={onOpen} />
           </section>
-        </>
-      ) : null}
-
-      {!hasSections && !hasGuide ? (
+        ) : (
+          <>
+            <section className="page-hero page-hero-guide" aria-labelledby="guide-title">
+              <div className="page-hero-copy">
+                <h2 id="guide-title">{screen.guide.title}</h2>
+                <p className="lede">{screen.guide.lede}</p>
+              </div>
+            </section>
+            <section className="page-band">
+              <HelpGuide sections={screen.guide.sections} layout="guide" onOpen={onOpen} />
+              <NextLink screen={screen} onOpen={onOpen} />
+            </section>
+          </>
+        )
+      ) : hasSections ? null : (
         <section className="page-band">
           <NextLink screen={screen} onOpen={onOpen} />
         </section>
-      ) : null}
+      )}
     </article>
   );
 }

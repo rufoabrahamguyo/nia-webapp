@@ -1101,8 +1101,7 @@ h1 {
 }
 
 .page-referral .page-band {
-  display: flex;
-  justify-content: center;
+  display: block;
 }
 
 .referral-media {
@@ -1190,12 +1189,37 @@ h1 {
   margin: 0 auto 40px;
 }
 
+.learn-split {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.learn-split .help-video-wrap {
+  width: 100%;
+  margin: 0;
+}
+
+.learn-split .page-band-intro {
+  max-width: none;
+  margin-bottom: 0;
+}
+
+.learn-split .page-band-intro p {
+  max-width: none;
+}
+
 .help-video-wrap .referral-video {
   background-image: url("/images/help-someone-poster.png");
 }
 
 .recognise-video .referral-video {
   background-image: url("/images/recognise-poster.png");
+}
+
+.pathway-video .referral-video {
+  background-image: url("/images/referral-poster.png");
 }
 
 .referral-chart {
@@ -1205,6 +1229,25 @@ h1 {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 16px;
+}
+
+.pathway-split {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+}
+
+.pathway-split .referral-chart {
+  width: min(100%, 460px);
+}
+
+.pathway-split h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
 
 @media (min-width: 900px) {
@@ -1390,6 +1433,7 @@ h1 {
 
 .page-hero-guide {
   --scene: url("/images/how-scene.jpg");
+  align-items: flex-start;
   justify-content: flex-start;
   height: 42dvh;
   min-height: 260px;
@@ -3011,10 +3055,10 @@ h1 {
   }
 
   .page-hero-guide {
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: flex-start;
     background-image:
-      linear-gradient(180deg, rgba(8, 12, 22, 0.35) 0%, rgba(8, 12, 22, 0.78) 100%),
+      linear-gradient(180deg, rgba(8, 12, 22, 0.78) 0%, rgba(8, 12, 22, 0.35) 100%),
       var(--scene);
     background-position: center, center;
   }
@@ -3187,6 +3231,17 @@ h1 {
     grid-template-columns: 1fr 1fr;
   }
 
+  .learn-split {
+    grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1.15fr);
+    gap: 48px;
+  }
+
+  .pathway-split {
+    grid-template-columns: minmax(0, 460px) minmax(180px, 1fr);
+    justify-content: start;
+    gap: 48px;
+  }
+
   .story-grid-topics .story-card:first-child {
     grid-column: 1 / -1;
   }
@@ -3254,15 +3309,25 @@ h1 {
   font-weight: 700;
 }
 
-.auth-field input {
-  min-height: 48px;
+.auth-field input,
+.auth-field textarea {
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0 14px;
   background: #f4f7fb;
   color: var(--ink);
   font: inherit;
   font-weight: 400;
+}
+
+.auth-field input {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.auth-field textarea {
+  min-height: 120px;
+  padding: 12px 14px;
+  resize: vertical;
 }
 
 .password-field {
@@ -3392,15 +3457,99 @@ h1 {
   text-underline-offset: 3px;
 }
 
-.account-links {
+.account-dash {
   display: grid;
-  gap: 10px;
-  margin-top: 22px;
+  grid-template-columns: 280px minmax(0, 1fr);
+  width: 100%;
+  min-height: calc(100dvh - var(--header-h));
+  margin: 0;
+  align-items: stretch;
+  background: var(--paper);
 }
 
-.account-links .button {
+.account-side {
+  position: sticky;
+  top: var(--header-h);
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--header-h));
+  box-sizing: border-box;
+  padding: 28px 16px;
+  background: #f4f7fb;
+  border-right: 1px solid var(--line);
+}
+
+.account-side nav {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-side .nav-button {
+  display: flex;
+  align-items: center;
   width: 100%;
+  box-sizing: border-box;
   justify-content: flex-start;
+  min-height: 60px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  font-weight: 650;
+  text-align: left;
+  white-space: normal;
+  box-shadow: none;
+}
+
+.account-side .nav-button:hover {
+  background: rgba(27, 42, 74, 0.06);
+  box-shadow: none;
+}
+
+.account-side .nav-button[aria-current="page"] {
+  background: var(--yellow);
+  box-shadow: none;
+}
+
+.account-side .account-logout {
+  margin-top: auto;
+}
+
+.account-main {
+  min-width: 0;
+  padding: 48px 56px 72px;
+}
+
+.account-dash .auth-form {
+  width: min(100%, 760px);
+}
+
+.account-dash .auth-form h1 {
+  font-size: clamp(2.8rem, 4vw, 3.8rem);
+}
+
+@media (max-width: 800px) {
+  .account-dash {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .account-side {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 16px;
+  }
+
+  .account-side .account-logout {
+    margin-top: 0;
+  }
+
+  .account-main {
+    padding: 28px var(--edge) 48px;
+  }
 }
 
 .account-actions {

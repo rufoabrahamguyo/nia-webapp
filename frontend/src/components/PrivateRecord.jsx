@@ -116,15 +116,8 @@ function unlockHeaders(token) {
   return token ? { "X-Record-Unlock": token } : undefined;
 }
 
-function CrisisHelp({ copy, onOpen, urgent, quiet }) {
-  if (!urgent && !quiet) return null;
-  if (!urgent) {
-    return (
-      <p className="diary-care">
-        {copy.careLine} <a href="tel:0722178177">{copy.careCall}</a>
-      </p>
-    );
-  }
+function CrisisHelp({ copy, onOpen, urgent }) {
+  if (!urgent) return null;
   return (
     <aside className="diary-crisis" role="note">
       <p>{copy.crisisLead}</p>
@@ -723,7 +716,7 @@ export default function PrivateRecord({ user, text, language, onOpen }) {
         ) : null}
         <form onSubmit={onSubmit}>
           <div className="diary-care-slot" aria-live="polite">
-            <CrisisHelp copy={copy} onOpen={onOpen} urgent={mentionsCrisis(body)} quiet />
+            <CrisisHelp copy={copy} onOpen={onOpen} urgent={mentionsCrisis(body)} />
           </div>
           <label className="diary-field">
             <span>{editingId ? copy.editTitle : copy.title}</span>

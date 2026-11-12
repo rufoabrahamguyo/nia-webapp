@@ -5,7 +5,6 @@ const copy = {
     exit: "Quick exit",
     helpBar: "Free, confidential, 24/7",
     nav: [
-      { id: "helplines", label: "Get help" },
       { id: "learn", label: "Learn" },
       { id: "rights", label: "Rights" },
       { id: "referral", label: "Referral pathways" },
@@ -113,6 +112,7 @@ const copy = {
     referralLine:
       "A survivor can be connected to safety, medical care, the police, legal help, and community support. You can start with any of these.",
     referralVideoTitle: "How it works",
+    referralLearn: "Learn the Referral Pathways",
     referralVideoPlay: "Play video",
     referralVideoFallback: "Your browser cannot play this video.",
     referralChartTitle: "The pathway",
@@ -183,7 +183,7 @@ const copy = {
     settings: "Settings",
     consent: "Consent",
     support: {
-      title: "Report a problem",
+      title: "Report an issue",
       lede: "Tell the Nia team if something on this website is broken, confusing, or not working for you.",
       notEmergency: "This page is not emergency help. If you are in danger, call 999 or 112. For support after sexual and gender-based violence, call 1195.",
       signIn: "Sign in to send a message and read replies.",
@@ -201,7 +201,7 @@ const copy = {
       elsePlaceholder: "Let us know what's going on",
       submitReport: "Submit report",
       closeReport: "Close",
-      reportButton: "Report a problem",
+      reportButton: "Report an issue",
       category: "What is this about?",
       categories: {
         bug: "A bug",
@@ -215,7 +215,7 @@ const copy = {
       messagePlaceholder: "What you did, and what you expected",
       send: "Send",
       sending: "Please wait",
-      sent: "Sent. The support team can read it.",
+      sent: "Thank you. The support team will work on it.",
       yours: "Your messages",
       empty: "You have not sent a message yet.",
       supportReply: "Support",
@@ -331,8 +331,6 @@ const copy = {
       entered: "Numbers entered",
       passcodeSaved: "Passcode saved.",
       passcodeRemoved: "Passcode removed.",
-      careLine: "If you are thinking about suicide, Befrienders Kenya can listen.",
-      careCall: "Call 0722 178 177",
       crisisLead: "You can talk to someone now. Nia cannot counsel from this note.",
       crisisBefrienders: "Befrienders 0722 178 177",
       crisisWhatsApp: "WhatsApp",
@@ -370,7 +368,7 @@ const copy = {
         },
         {
           title: "What Nia keeps",
-          body: "Nia keeps your email address, username, avatar, private notes, NiaChat posts, comments, reactions, and reports, messages you send through Report a problem, and the date and time of those actions. This runs your account, shows your posts under your username, and lets staff moderate. Nia does not ask for your real name. If you continue with Google, Nia keeps the email Google confirms and a Google account id. It does not keep your Google profile name. Your notes passcode is stored only as a hash.",
+          body: "Nia keeps your email address, username, avatar, private notes, NiaChat posts, comments, reactions, and reports, messages you send through Report an issue, and the date and time of those actions. This runs your account, shows your posts under your username, and lets staff moderate. Nia does not ask for your real name. If you continue with Google, Nia keeps the email Google confirms and a Google account id. It does not keep your Google profile name. Your notes passcode is stored only as a hash.",
         },
         {
           title: "Private notes",
@@ -390,11 +388,11 @@ const copy = {
         },
         {
           title: "How long Nia keeps it",
-          body: "Nia keeps this while your account is open. If you delete your account, Nia removes the account, your notes, your posts, your comments, reactions, and reports on those posts at that time. Messages you sent through Report a problem, and the staff record of moderation actions, stay after that delete.",
+          body: "Nia keeps this while your account is open. If you delete your account, Nia removes the account, your notes, your posts, your comments, reactions, and reports on those posts at that time. Messages you sent through Report an issue, and the staff record of moderation actions, stay after that delete.",
         },
         {
           title: "Your rights",
-          body: "You can see your username on your profile page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report a problem, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
+          body: "You can see your username on your profile page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report an issue, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
         },
         {
           title: "Staying safer",
@@ -402,11 +400,11 @@ const copy = {
         },
         {
           title: "Who to contact",
-          body: "The Nia team runs this platform. Use Report a problem on this site to reach them about your data.",
+          body: "The Nia team runs this platform. Use Report an issue on this site to reach them about your data.",
         },
         {
           title: "This version",
-          body: "Version 1.0, November 2026. If this notice changes, Nia will ask you to agree again before you write in NiaChat or use Report a problem.",
+          body: "Version 1.0, November 2026. If this notice changes, Nia will ask you to agree again before you write in NiaChat or use Report an issue.",
         },
       ],
       scrollHint: "Read to the end, then you can agree.",
@@ -848,7 +846,6 @@ const copy = {
     exit: "Toka haraka",
     helpBar: "Bure, faragha, saa 24",
     nav: [
-      { id: "helplines", label: "Pata msaada" },
       { id: "learn", label: "Jifunze" },
       { id: "rights", label: "Haki" },
       { id: "referral", label: "Njia za rufaa" },
@@ -956,6 +953,7 @@ const copy = {
     referralLine:
       "Mtu aliyenusurika anaweza kuunganishwa na usalama, matibabu, polisi, msaada wa kisheria, na jamii. Unaweza kuanza na yoyote kati ya hizi.",
     referralVideoTitle: "Jinsi inavyofanya kazi",
+    referralLearn: "Jifunze njia za rufaa",
     referralVideoPlay: "Cheza video",
     referralVideoFallback: "Kivinjari hiki hakiwezi kucheza video hii.",
     referralChartTitle: "Njia",
@@ -1058,7 +1056,7 @@ const copy = {
       messagePlaceholder: "Ulichofanya, na ulichotarajia",
       send: "Tuma",
       sending: "Tafadhali subiri",
-      sent: "Imetumwa. Timu ya msaada inaweza kuisoma.",
+      sent: "Asante. Timu ya msaada itashughulikia.",
       yours: "Ujumbe wako",
       empty: "Bado hujatuma ujumbe.",
       supportReply: "Msaada",
@@ -1174,8 +1172,6 @@ const copy = {
       entered: "Nambari zilizoingizwa",
       passcodeSaved: "Nambari ya siri imehifadhiwa.",
       passcodeRemoved: "Nambari ya siri imeondolewa.",
-      careLine: "Ukiwa na mawazo ya kujiua, Befrienders Kenya wanaweza kusikiliza.",
-      careCall: "Piga 0722 178 177",
       crisisLead: "Unaweza kuzungumza na mtu sasa. Nia haiwezi kutoa ushauri kutoka kwa andiko hili.",
       crisisBefrienders: "Befrienders 0722 178 177",
       crisisWhatsApp: "WhatsApp",

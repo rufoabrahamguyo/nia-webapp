@@ -3,11 +3,13 @@ import { requestAuth } from "../auth.js";
 import { AvatarPicker } from "../avatars.jsx";
 import ButtonIcon from "./ButtonIcon.jsx";
 import PasswordField from "./PasswordField.jsx";
+import ReportForm from "./ReportForm.jsx";
 
 export default function Account({ mode, text, user, onNavigate, onUser, onLogout }) {
   const account = text.account;
   const auth = text.auth;
   const isSettings = mode === "settings";
+  const isSupport = mode === "support";
   const [usernameKind, setUsernameKind] = useState(user.usernameKind === "chosen" ? "chosen" : "anonymous");
   const [username, setUsername] = useState(user.usernameKind === "chosen" ? user.username : "");
   const [errorCode, setErrorCode] = useState("");
@@ -87,8 +89,40 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
   }
 
   return (
-    <section className="auth-panel" aria-labelledby="account-title">
-      <div className="auth-form">
+    <section className="account-dash" aria-labelledby="account-title">
+      <aside className="account-side">
+        <nav aria-label={text.accountMenu}>
+          <button
+            type="button"
+            className="nav-button"
+            aria-current={mode === "profile" ? "page" : undefined}
+            onClick={() => onNavigate("profile")}
+          >
+            {text.profile}
+          </button>
+          <button
+            type="button"
+            className="nav-button"
+            aria-current={isSettings ? "page" : undefined}
+            onClick={() => onNavigate("settings")}
+          >
+            {text.settings}
+          </button>
+          <button
+            type="button"
+            className="nav-button"
+            aria-current={isSupport ? "page" : undefined}
+            onClick={() => onNavigate("support")}
+          >
+            {account.support}
+          </button>
+          <button type="button" className="nav-button account-logout" onClick={() => setLogoutOpen(true)}>
+            {text.logOut}
+          </button>
+        </nav>
+      </aside>
+      <div className="account-main">
+        <div className="auth-form">
         {isSettings ? (
           <>
           <form onSubmit={onSubmit}>
@@ -223,6 +257,15 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
             )}
           </div>
           </>
+        ) : isSupport ? (
+          <ReportForm
+            tone="page"
+            copy={text.support}
+            user={user}
+            titleId="account-title"
+            onSignIn={() => onNavigate("login")}
+            onConsent={() => onNavigate("consent")}
+          />
         ) : (
           <>
             <h1 id="account-title" className="account-username">{user.username}</h1>
@@ -236,19 +279,9 @@ export default function Account({ mode, text, user, onNavigate, onUser, onLogout
               onChange={chooseAvatar}
             />
             {error ? <p className="auth-error" role="alert">{error}</p> : null}
-            <div className="account-links">
-              <button type="button" className="button button-secondary" onClick={() => onNavigate("settings")}>
-                {text.settings}
-              </button>
-              <button type="button" className="button button-secondary" onClick={() => onNavigate("support")}>
-                {account.support}
-              </button>
-              <button type="button" className="button button-secondary" onClick={() => setLogoutOpen(true)}>
-                {text.logOut}
-              </button>
-            </div>
           </>
         )}
+        </div>
       </div>
       {logoutOpen ? (
         <div className="logout-layer">

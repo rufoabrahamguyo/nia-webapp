@@ -36,6 +36,7 @@ export default function App() {
   );
   const text = copy[language];
   const isAuth = view === "login" || view === "signup" || view === "google";
+  const isAccount = view === "profile" || view === "settings" || (view === "support" && user);
   const screen = applyPage(text.screens[view], pages?.[view]?.[language]);
 
   useEffect(() => {
@@ -167,11 +168,11 @@ export default function App() {
           <Helplines language={language} text={text} />
         ) : view === "referral" ? (
           <ReferralPathways text={text} />
-        ) : view === "support" ? (
+        ) : view === "support" && !user ? (
           <AppSupport text={text} user={user} language={language} onOpen={open} />
         ) : view === "chat" ? (
           <NiaChat text={text} user={user} language={language} onOpen={open} />
-        ) : view === "profile" || view === "settings" ? (
+        ) : view === "profile" || view === "settings" || view === "support" ? (
           user && (
             <Account
               key={view}
@@ -193,7 +194,7 @@ export default function App() {
             onOpen={open}
           />
         )}
-        {!isAuth && (
+        {!isAuth && !isAccount && (
           <div className="wrap">
             <HelpLine text={text} onOpen={open} />
           </div>

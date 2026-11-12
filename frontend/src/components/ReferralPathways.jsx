@@ -11,27 +11,30 @@ export default function ReferralPathways({ text }) {
       </header>
 
       <div className="page-band">
-        <div className="referral-media">
-          <section aria-labelledby="referral-video-title">
-            <h2 id="referral-video-title">{text.referralVideoTitle}</h2>
+        <div className="learn-split">
+          <div className="page-band-intro">
+            <h2 id="referral-video-title">{text.referralLearn}</h2>
+          </div>
+          <div className="help-video-wrap">
             <VideoFrame
+              className="pathway-video"
               src="/videos/referral-pathway.mp4"
               poster="/images/referral-poster.png"
-              label={text.referralVideoTitle}
+              label={text.referralLearn}
               playLabel={text.referralVideoPlay}
               fallback={text.referralVideoFallback}
             />
-          </section>
-
-          <section aria-labelledby="referral-chart-title">
-            <h2 id="referral-chart-title">{text.referralChartTitle}</h2>
-            <img
-              className="referral-chart"
-              src="/images/referral-pathway.png?v=2"
-              alt={text.referralChartAlt}
-            />
-          </section>
+          </div>
         </div>
+
+        <section className="pathway-split" aria-labelledby="referral-chart-title">
+          <img
+            className="referral-chart"
+            src="/images/referral-pathway.png?v=3"
+            alt={text.referralChartAlt}
+          />
+          <h2 id="referral-chart-title">{text.referralChartTitle}</h2>
+        </section>
       </div>
     </article>
   );
