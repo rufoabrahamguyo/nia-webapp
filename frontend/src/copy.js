@@ -116,6 +116,18 @@ const copy = {
     referralVideoPlay: "Play video",
     referralVideoFallback: "Your browser cannot play this video.",
     referralChartTitle: "The pathway",
+    referralChartLine:
+      "You do not have to take every step, and you do not have to take them in this order. A counsellor, a call centre, a health worker, a peer educator, or a GBV focal person can connect a survivor to the help they choose.",
+    referralChartPoints: [
+      "Safety and security at a police or gender desk. Call 999 or 112.",
+      "Medical and psychological care at a hospital, clinic, or health centre.",
+      "A police investigation, which can include counselling and prosecution.",
+      "Legal help, including legal aid, court, and prosecution.",
+      "Social support: counselling, someone to follow the case, shelter, and practical help.",
+      "Child protection officers, if the survivor is under 18.",
+      "A separate path if trafficking is part of what happened.",
+      "Community care at home, a shelter, an NGO, a faith group, or another place they trust.",
+    ],
     referralChartAlt:
       "Flowchart titled Referral Pathway for Survivors of Gender-Based Violence. A survivor is first met by a counselor, call centre agent, health worker, peer educator, or GBV focal person. From there the path connects to safety and security at police and gender desks (999 or 112); medical and psychological care at a hospital, clinic, or health centre; police investigative services, including investigation, counselling, and prosecution; legal justice services such as legal aid, court, and prosecution; social protection, including counselling, case management, shelter, and support; child protection services, which involve child protection officers if the survivor is under 18; trafficking of persons services for investigation, counselling, and prosecution; and community care at home, a shelter, an NGO, a faith-based organisation, or another place.",
     hoursLabel: "Opening hours",
@@ -471,7 +483,7 @@ const copy = {
     },
     chat: {
       title: "NiaChat",
-      lede: "A space for signed-in people to share a story and comment. You can report a post that is harmful. A phone number, an email address, or a blocked word is held for an administrator to check. Nia does not give counselling or legal advice here. NiaChat is not the 1195 helpline.",
+      lede: "A space where registered users can share their stories and experiences, connect, and engage in meaningful conversations with others. Nia does not give counselling or legal advice here.",
       privateNote: "This is separate from your private record. A private record stays on your account and cannot be posted here.",
       signIn: "Sign in to read or write in NiaChat.",
       needConsent: "Read and agree to the terms before you write in NiaChat. Nia is not an emergency service. If you may hurt yourself or someone else, call 999 or 112.",
@@ -770,8 +782,8 @@ const copy = {
             ],
           },
           {
-            title: "Nothing here is saved",
-            body: "Sign in to keep a note on your account. Until you do, nothing on this page is saved.",
+            title: "Encrypted for your privacy",
+            body: "Sign in to keep a note on your account. It is encrypted before it is saved. Only you can open it, after your passcode.",
             guestOnly: true,
           },
           {
@@ -956,7 +968,19 @@ const copy = {
     referralLearn: "Jifunze njia za rufaa",
     referralVideoPlay: "Cheza video",
     referralVideoFallback: "Kivinjari hiki hakiwezi kucheza video hii.",
-    referralChartTitle: "Njia",
+    referralChartTitle: "Njia ya rufaa",
+    referralChartLine:
+      "Huhitaji kuchukua kila hatua, wala kwa mpangilio huu. Mshauri, kituo cha simu, mfanyakazi wa afya, mwalimu rika, au mtu mkuu wa GBV anaweza kumuunganisha mtu aliyenusurika na msaada anaouchagua.",
+    referralChartPoints: [
+      "Usalama katika polisi au dawati la kijinsia. Piga 999 au 112.",
+      "Matibabu na huduma za kisaikolojia hospitalini, kliniki, au kituo cha afya.",
+      "Uchunguzi wa polisi, unaoweza kujumuisha ushauri na mashtaka.",
+      "Msaada wa kisheria, mahakama, na mashtaka.",
+      "Ulinzi wa jamii: ushauri, mtu wa kufuatilia kesi, makazi, na msaada wa kila siku.",
+      "Maafisa wa ulinzi wa mtoto, ikiwa mtu aliyenusurika ana chini ya miaka 18.",
+      "Njia tofauti ikiwa usafirishaji haramu wa watu ni sehemu ya yaliyotokea.",
+      "Huduma za jamii nyumbani, makazini, katika NGO, shirika la kidini, au mahali pengine wanapoamini.",
+    ],
     referralChartAlt:
       "Mchoro wa njia ya rufaa kwa walionusurika na unyanyasaji wa kijinsia. Mwanzo ni mtu aliyenusurika, kisha mshauri, wakala wa kituo cha simu, mfanyakazi wa afya, mwalimu rika, au mtu mkuu wa GBV. Kutoka hapo njia inaunganisha na usalama katika polisi na dawati la kijinsia (999 au 112); matibabu na huduma za kisaikolojia hospitalini, kliniki, au kituo cha afya; uchunguzi wa polisi, ikiwa ni pamoja na uchunguzi, ushauri, na mashtaka; huduma za haki kama msaada wa kisheria, mahakama, na mashtaka; ulinzi wa jamii, ikiwa ni pamoja na ushauri, usimamizi wa kesi, makazi, na msaada; ulinzi wa mtoto, unaohusisha maafisa wa ulinzi wa mtoto ikiwa ana chini ya miaka 18; huduma za usafirishaji haramu wa watu; na huduma za jamii nyumbani, makazini, katika NGO, shirika la kidini, au mahali pengine.",
     hoursLabel: "Saa za kufunguliwa",
@@ -1312,7 +1336,7 @@ const copy = {
     },
     chat: {
       title: "NiaChat",
-      lede: "Nafasi ya hadithi kwa watu walioingia. Unaweza kuripoti chapisho linaloumiza. Nambari ya simu, barua pepe, au neno lililozuiwa linasubiri msimamizi. Nia haitoi ushauri wa kiakili wala ushauri wa kisheria hapa. NiaChat si simu ya 1195.",
+      lede: "Nafasi ambapo watumiaji waliosajiliwa wanaweza kushiriki hadithi na uzoefu wao, kuungana, na kushiriki mazungumzo yenye maana na wengine. Nia haitoi ushauri wa kiakili wala ushauri wa kisheria hapa.",
       privateNote: "Hii si kumbukumbu yako ya faragha. Kumbukumbu inabaki kwenye akaunti yako, na haiwezi kuwekwa hapa.",
       signIn: "Ingia ili kusoma au kuandika kwenye NiaChat.",
       needConsent: "Soma na ukubali masharti kabla ya kuandika kwenye NiaChat. Nia si huduma ya dharura. Ukiweza kujidhuru au kumdhuru mtu, piga 999 au 112.",
@@ -1611,8 +1635,8 @@ const copy = {
             ],
           },
           {
-            title: "Hakuna kinachohifadhiwa hapa",
-            body: "Ingia ili kuweka andiko kwenye akaunti yako. Kabla ya kuingia, hakuna kinachohifadhiwa kwenye ukurasa huu.",
+            title: "Imesimbwa kwa faragha yako",
+            body: "Ingia ili kuweka andiko kwenye akaunti yako. Husimbwa kwa njia fiche kabla ya kuhifadhiwa. Ni wewe tu unayeweza kulifungua, baada ya nambari yako ya siri.",
             guestOnly: true,
           },
           {

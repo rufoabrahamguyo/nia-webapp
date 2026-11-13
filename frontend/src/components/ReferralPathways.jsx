@@ -33,7 +33,15 @@ export default function ReferralPathways({ text }) {
             src="/images/referral-pathway.png?v=3"
             alt={text.referralChartAlt}
           />
-          <h2 id="referral-chart-title">{text.referralChartTitle}</h2>
+          <div className="pathway-copy">
+            <h2 id="referral-chart-title">{text.referralChartTitle}</h2>
+            <p>{text.referralChartLine}</p>
+            <ul className="guide-list">
+              {text.referralChartPoints.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </div>
         </section>
       </div>
     </article>

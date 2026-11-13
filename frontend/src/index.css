@@ -1104,6 +1104,10 @@ h1 {
   display: block;
 }
 
+.page-referral .learn-split {
+  margin-bottom: 80px;
+}
+
 .referral-media {
   display: grid;
   gap: 48px;
@@ -1234,11 +1238,30 @@ h1 {
 .pathway-split {
   display: grid;
   gap: 28px;
-  align-items: center;
+  align-items: start;
+}
+
+.pathway-copy p {
+  margin: 14px 0 0;
+  font-size: 1.08rem;
+  line-height: 1.45;
+}
+
+.pathway-copy .guide-list {
+  margin-top: 18px;
+}
+
+.pathway-copy .guide-list li {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.pathway-copy .guide-list li + li {
+  margin-top: 12px;
 }
 
 .pathway-split .referral-chart {
-  width: min(100%, 460px);
+  width: min(100%, 680px);
 }
 
 .pathway-split h2 {
@@ -3237,7 +3260,7 @@ h1 {
   }
 
   .pathway-split {
-    grid-template-columns: minmax(0, 460px) minmax(180px, 1fr);
+    grid-template-columns: minmax(0, 680px) minmax(180px, 1fr);
     justify-content: start;
     gap: 48px;
   }
