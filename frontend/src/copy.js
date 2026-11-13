@@ -367,56 +367,89 @@ const copy = {
       },
     },
     consent: {
-      title: "Privacy and consent",
-      lede: "Please read this before you continue. Nia is not an emergency service. Version 1.0, November 2026.",
-      sections: [
+      title: "Legal and safety",
+      lede: "Please read these policies and accept them before you continue. Nia is not an emergency service.",
+      versionNote: "Version 1.1, November 2026. If these terms change, Nia will ask you to agree again before you write in NiaChat or use Contact support.",
+      documents: [
         {
-          title: "What Nia is",
-          body: "Nia gives information, helplines, and a private place to write. Nia is not the police, a hospital, a counsellor, or an emergency service. The Rights page explains the law in plain language. It is not legal advice. If you are in danger, or you may hurt yourself or someone else, call 999 or 112. For support after sexual and gender-based violence, call 1195. Writing in NiaChat does not send help.",
+          title: "Terms of use",
+          sections: [
+            {
+              heading: "1. Acceptance of terms",
+              paragraphs: [
+                "By creating a Nia account, or by continuing to use Nia while signed in, you agree to these terms. They sit alongside the laws that apply in Kenya, including the Constitution of Kenya 2010 and the Data Protection Act 2019.",
+                "These terms are the agreement between you and the Nia team about your use of this site and the account attached to it.",
+              ],
+            },
+            {
+              heading: "2. Purpose of the platform",
+              paragraphs: [
+                "Nia is a place to learn, find helplines and referral pathways, keep a private note, and, if you choose, talk with other signed-in people in NiaChat. It is for adults in Kenya who want information and support around sexual harassment and sexual and gender-based violence.",
+                "Nia is not the police, a hospital, a counsellor, or an emergency service. The Rights page explains the law in plain language. It is not legal advice. If you are in danger, or you may hurt yourself or someone else, call 999 or 112. For support after sexual and gender-based violence, call 1195. Writing on Nia does not send help.",
+                "Do not use Nia to harass, threaten, or name someone, to share another person’s story without their agreement, or to do anything illegal.",
+              ],
+            },
+            {
+              heading: "3. Your responsibility",
+              paragraphs: [
+                "You confirm that you are 18 or older. You are responsible for the email, password, and notes passcode on your account. Use Contact support, while signed in, if someone else gets into the account.",
+                "Do not use your real name, or a name you use on other sites. Do not put a phone number, an email address, a workplace, or anything else that identifies you or another person into NiaChat.",
+              ],
+            },
+          ],
         },
         {
-          title: "Your age",
-          body: "You confirm that you are 18 or older.",
+          title: "Privacy and data protection",
+          sections: [
+            {
+              heading: "1. What Nia collects",
+              paragraphs: [
+                "Under the Data Protection Act 2019, Nia keeps only what it needs to run your account and this site: your email address, username, avatar, private notes, NiaChat posts, comments, reactions, and reports, messages you send through Contact support, and the date and time of those actions.",
+                "If you continue with Google, Nia keeps the email Google confirms and a Google account id. It does not keep your Google profile name. Nia does not ask for your real name. Your notes passcode is stored only as a hash. You give this information so Nia can run the account you asked for.",
+              ],
+            },
+            {
+              heading: "2. Who can see it",
+              paragraphs: [
+                "A private note is encrypted before it is saved. On the site, only you can open your notes, after your passcode. The encryption key is kept on the server. This protection holds while that server stays secure.",
+                "NiaChat posts and comments appear under your username. They are encrypted in the database, and administrators can open them. A post or comment with a phone number, an email address, or a blocked word is held until an administrator allows it or hides it. Other people can report a post or comment. Enough reports hide it for review. Support staff can read messages you send through Contact support.",
+                "Other signed-in people can see NiaChat posts and comments that are allowed. Nia does not sell this information. Nia shares it when the law requires it, for example a court order.",
+              ],
+            },
+            {
+              heading: "3. Your rights",
+              paragraphs: [
+                "You can see your username on your profile page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. Nia then removes the account, your notes, your posts, your comments, and the reactions and reports on those posts. Messages you sent through Contact support, and the staff record of moderation, stay after that delete.",
+                "While signed in, use Contact support to ask to see, correct, or delete your data, or to withdraw consent. You can also complain to the Office of the Data Protection Commissioner (ODPC). Nia keeps this information while your account is open.",
+              ],
+            },
+          ],
         },
         {
-          title: "What Nia keeps",
-          body: "Nia keeps your email address, username, avatar, private notes, NiaChat posts, comments, reactions, and reports, messages you send through Report an issue, and the date and time of those actions. This runs your account, shows your posts under your username, and lets staff moderate. Nia does not ask for your real name. If you continue with Google, Nia keeps the email Google confirms and a Google account id. It does not keep your Google profile name. Your notes passcode is stored only as a hash.",
-        },
-        {
-          title: "Private notes",
-          body: "A note is encrypted before it is saved. On the site, only you can open your notes, after your passcode. The encryption key is kept on the server. This protection holds while that server stays secure.",
-        },
-        {
-          title: "NiaChat",
-          body: "Posts and comments appear under your username. They are encrypted in the database, and administrators can open them. A post or comment with a phone number, an email address, or a blocked word is held until an administrator allows it or hides it. Other people can report a post or comment. Enough reports hide it for review. Administrators can read posts, hide them, and reply. You can delete your own post. Do not post your real name, or anything that identifies you or anyone else.",
-        },
-        {
-          title: "Community rules",
-          body: "Be respectful. Do not harass, threaten, or name anyone. Do not share someone else’s story unless they have agreed.",
-        },
-        {
-          title: "Who can see it",
-          body: "You can see your account, your notes, and your posts. Other signed-in people can see NiaChat posts and comments that are allowed. Administrators can see posts and comments, including those held for review. Support staff can see messages you send them. Nia does not sell this information. Nia shares it when the law requires it, for example a court order.",
-        },
-        {
-          title: "How long Nia keeps it",
-          body: "Nia keeps this while your account is open. If you delete your account, Nia removes the account, your notes, your posts, your comments, reactions, and reports on those posts at that time. Messages you sent through Report an issue, and the staff record of moderation actions, stay after that delete.",
-        },
-        {
-          title: "Your rights",
-          body: "You can see your username on your profile page, read and edit your notes, change your username, and delete a note, a post, or the whole account. Deleting the account withdraws this consent. You can also use Report an issue, while signed in, to ask to see, correct, or delete your data, or to withdraw consent. You can complain to the Office of the Data Protection Commissioner (ODPC).",
-        },
-        {
-          title: "Staying safer",
-          body: "Use Quick exit if you need to leave this site quickly. Log out on a shared phone. Use an email address that only you can open.",
-        },
-        {
-          title: "Who to contact",
-          body: "The Nia team runs this platform. Use Report an issue on this site to reach them about your data.",
-        },
-        {
-          title: "This version",
-          body: "Version 1.0, November 2026. If this notice changes, Nia will ask you to agree again before you write in NiaChat or use Report an issue.",
+          title: "Survivor safety and confidentiality",
+          sections: [
+            {
+              heading: "1. Privacy first",
+              paragraphs: [
+                "Your private notes are not shown to other people on this site. Nia does not contact the police, a hospital, or any other agency about what you write, unless the law requires it. You decide whether to call a helpline, follow a referral pathway, or keep a note.",
+                "Use Quick exit if you need to leave this site quickly. Log out on a shared phone. Use an email address that only you can open.",
+              ],
+            },
+            {
+              heading: "2. Limits of confidentiality",
+              paragraphs: [
+                "Nia does not investigate what you write, and it does not make a report to the authorities for you. Some laws in Kenya, including the Sexual Offences Act and the Children Act, require certain people to report when a child is in immediate danger. Nia is for adults aged 18 and over. Do not post information that identifies a child.",
+                "If a child is in danger now, call 999, 112, or the child helpline 116.",
+              ],
+            },
+            {
+              heading: "3. Staying safer",
+              paragraphs: [
+                "Do not send your story by SMS, or by a chat that other people can open, to someone you do not trust. Be careful on a shared device. In NiaChat, leave out real names, phone numbers, and workplaces. You can delete your own post.",
+                "Be respectful. Do not harass, threaten, or name anyone. Do not share someone else’s story unless they have agreed.",
+              ],
+            },
+          ],
         },
       ],
       scrollHint: "Read to the end, then you can agree.",
@@ -1220,56 +1253,89 @@ const copy = {
       },
     },
     consent: {
-      title: "Faragha na idhini",
-      lede: "Tafadhali soma hii kabla ya kuendelea. Nia si huduma ya dharura. Toleo la 1.0, Novemba 2026.",
-      sections: [
+      title: "Sheria na usalama",
+      lede: "Tafadhali soma sera hizi na uzikubali kabla ya kuendelea. Nia si huduma ya dharura.",
+      versionNote: "Toleo la 1.1, Novemba 2026. Masharti haya yakibadilika, Nia itakuomba ukubali tena kabla ya kuandika kwenye NiaChat au kutumia Wasiliana na msaada.",
+      documents: [
         {
-          title: "Nia ni nini",
-          body: "Nia inatoa taarifa, nambari za msaada, na mahali pa faragha pa kuandika. Nia si polisi, si hospitali, si mshauri, na si huduma ya dharura. Ukurasa wa Haki unaeleza sheria kwa lugha rahisi. Si ushauri wa kisheria. Ukiwa hatarini, au ukiweza kujidhuru au kumdhuru mtu mwingine, piga 999 au 112. Kwa msaada baada ya unyanyasaji wa kijinsia, piga 1195. Kuandika kwenye NiaChat hakutumi msaada.",
+          title: "Masharti ya matumizi",
+          sections: [
+            {
+              heading: "1. Kukubali masharti",
+              paragraphs: [
+                "Kwa kufungua akaunti ya Nia, au kwa kuendelea kutumia Nia ukiwa umeingia, unakubali masharti haya. Yanaambatana na sheria zinazotumika Kenya, ikiwemo Katiba ya Kenya 2010 na Sheria ya Ulinzi wa Data 2019.",
+                "Masharti haya ni makubaliano kati yako na timu ya Nia kuhusu matumizi yako ya tovuti hii na akaunti iliyoambatanishwa nayo.",
+              ],
+            },
+            {
+              heading: "2. Madhumuni ya jukwaa",
+              paragraphs: [
+                "Nia ni mahali pa kujifunza, kupata nambari za msaada na njia za rufaa, kuweka andiko la faragha, na, ukichagua, kuzungumza na watu wengine walioingia kwenye NiaChat. Ni kwa watu wazima nchini Kenya wanaotaka taarifa na msaada kuhusu unyanyasaji wa kijinsia.",
+                "Nia si polisi, si hospitali, si mshauri, na si huduma ya dharura. Ukurasa wa Haki unaeleza sheria kwa lugha rahisi. Si ushauri wa kisheria. Ukiwa hatarini, au ukiweza kujidhuru au kumdhuru mtu mwingine, piga 999 au 112. Kwa msaada baada ya unyanyasaji wa kijinsia, piga 1195. Kuandika kwenye Nia hakutumi msaada.",
+                "Usitumie Nia kunyanyasa, kutisha, au kumtaja mtu kwa jina, kushiriki hadithi ya mtu mwingine bila makubaliano yake, au kufanya jambo lisilo halali.",
+              ],
+            },
+            {
+              heading: "3. Wajibu wako",
+              paragraphs: [
+                "Unathibitisha kuwa una miaka 18 au zaidi. Una wajibu wa barua pepe, nenosiri, na nambari ya siri ya andiko kwenye akaunti yako. Tumia Wasiliana na msaada, ukiwa umeingia, mtu mwingine akiingia kwenye akaunti.",
+                "Usitumie jina lako halisi, wala jina unalotumia kwenye tovuti nyingine. Usiweke nambari ya simu, barua pepe, mahali pa kazi, wala chochote kinachokutambulisha wewe au mtu mwingine kwenye NiaChat.",
+              ],
+            },
+          ],
         },
         {
-          title: "Umri wako",
-          body: "Unathibitisha kuwa una miaka 18 au zaidi.",
+          title: "Faragha na ulinzi wa data",
+          sections: [
+            {
+              heading: "1. Nia hukusanya nini",
+              paragraphs: [
+                "Chini ya Sheria ya Ulinzi wa Data 2019, Nia huhifadhi tu inachohitaji kuendesha akaunti yako na tovuti hii: barua pepe yako, jina la mtumiaji, picha ya wasifu, andiko la faragha, machapisho ya NiaChat, maoni, majibu, na ripoti, ujumbe unaotuma kupitia Wasiliana na msaada, na tarehe na saa za mambo hayo.",
+                "Ukiendelea na Google, Nia huhifadhi barua pepe Google inayothibitisha na kitambulisho cha akaunti ya Google. Haihifadhi jina lako la wasifu wa Google. Nia haiulizi jina lako halisi. Nambari ya siri ya andiko huhifadhiwa kama msimbo pekee. Unatoa taarifa hii ili Nia iendeshe akaunti uliyoomba.",
+              ],
+            },
+            {
+              heading: "2. Nani anaweza kuona",
+              paragraphs: [
+                "Andiko la faragha husimbwa kwa njia fiche kabla ya kuhifadhiwa. Kwenye tovuti, ni wewe tu unayeweza kufungua andiko zako, baada ya nambari yako ya siri. Ufunguo wa usimbaji huhifadhiwa kwenye seva. Ulinzi huu unategemea seva hiyo kubaki salama.",
+                "Machapisho na maoni ya NiaChat huonekana chini ya jina lako la mtumiaji. Yamesimbwa kwenye hifadhidata, na wasimamizi wanaweza kuyafungua. Chapisho au maoni yenye nambari ya simu, barua pepe, au neno lililozuiwa husubiri hadi msimamizi aliruhusu au alifiche. Watu wengine wanaweza kuripoti chapisho au maoni. Ripoti za kutosha hulificha ili likaguliwe. Wafanyakazi wa msaada wanaweza kusoma ujumbe unaotuma kupitia Wasiliana na msaada.",
+                "Watu wengine walioingia wanaweza kuona machapisho na maoni ya NiaChat yaliyoruhusiwa. Nia haiuzi taarifa hii. Nia huishiriki sheria inapohitaji, kwa mfano amri ya mahakama.",
+              ],
+            },
+            {
+              heading: "3. Haki zako",
+              paragraphs: [
+                "Unaweza kuona jina lako la mtumiaji kwenye ukurasa wa wasifu, kusoma na kuhariri andiko zako, kubadilisha jina la mtumiaji, na kufuta andiko, chapisho, au akaunti yote. Kufuta akaunti kunaondoa idhini hii. Nia kisha huondoa akaunti, andiko zako, machapisho yako, maoni yako, na majibu na ripoti za machapisho hayo. Ujumbe uliotuma kupitia Wasiliana na msaada, na kumbukumbu ya wafanyakazi kuhusu usimamizi, hubaki baada ya kufuta huko.",
+                "Ukiwa umeingia, tumia Wasiliana na msaada kuomba kuona, kusahihisha, au kufuta data yako, au kuondoa idhini. Unaweza pia kulalamika kwa Ofisi ya Kamishna wa Ulinzi wa Data (ODPC). Nia huhifadhi taarifa hii wakati akaunti yako iko wazi.",
+              ],
+            },
+          ],
         },
         {
-          title: "Nia huhifadhi nini",
-          body: "Nia huhifadhi barua pepe yako, jina la mtumiaji, picha ya wasifu, andiko lako la faragha, machapisho ya NiaChat, maoni, majibu, na ripoti, ujumbe unaotuma kupitia Ripoti tatizo, na tarehe na saa za mambo hayo. Hii inaendesha akaunti yako, inaonyesha machapisho chini ya jina lako la mtumiaji, na inawaruhusu wafanyakazi kusimamia. Nia haiulizi jina lako halisi. Ukiendelea na Google, Nia huhifadhi barua pepe Google inayothibitisha na kitambulisho cha akaunti ya Google. Haihifadhi jina lako la wasifu wa Google. Nambari ya siri ya andiko huhifadhiwa kama msimbo pekee.",
-        },
-        {
-          title: "Andiko la faragha",
-          body: "Andiko husimbwa kwa njia fiche kabla ya kuhifadhiwa. Kwenye tovuti, ni wewe tu unayeweza kufungua andiko zako, baada ya nambari yako ya siri. Ufunguo wa usimbaji huhifadhiwa kwenye seva. Ulinzi huu unategemea seva hiyo kubaki salama.",
-        },
-        {
-          title: "NiaChat",
-          body: "Machapisho na maoni huonekana chini ya jina lako la mtumiaji. Yamesimbwa kwenye hifadhidata, na wasimamizi wanaweza kuyafungua. Chapisho au maoni yenye nambari ya simu, barua pepe, au neno lililozuiwa husubiri hadi msimamizi aliruhusu au alifiche. Watu wengine wanaweza kuripoti chapisho au maoni. Ripoti za kutosha hulificha ili likaguliwe. Wasimamizi wanaweza kusoma machapisho, kuyaficha, na kujibu. Unaweza kufuta chapisho lako. Usiandike jina lako halisi, wala chochote kinachokutambulisha wewe au mtu mwingine.",
-        },
-        {
-          title: "Kanuni za jamii",
-          body: "Waheshimu watu. Usinyanyase, usitishie, wala usimtaje mtu kwa jina. Usishiriki hadithi ya mtu mwingine isipokuwa amekubali.",
-        },
-        {
-          title: "Nani anaweza kuona",
-          body: "Unaweza kuona akaunti yako, andiko zako, na machapisho yako. Watu wengine walioingia wanaweza kuona machapisho na maoni ya NiaChat yaliyoruhusiwa. Wasimamizi wanaweza kuona machapisho na maoni, ikiwemo yale yanayosubiri ukaguzi. Wafanyakazi wa msaada wanaweza kuona ujumbe unaowatumia. Nia haiuzi taarifa hii. Nia huishiriki sheria inapohitaji, kwa mfano amri ya mahakama.",
-        },
-        {
-          title: "Nia huihifadhi kwa muda gani",
-          body: "Nia huhifadhi data hii wakati akaunti yako iko wazi. Ukifuta akaunti, Nia huondoa akaunti, andiko zako, machapisho yako, maoni yako, majibu, na ripoti za machapisho hayo wakati huo. Ujumbe uliotuma kupitia Ripoti tatizo, na kumbukumbu ya wafanyakazi kuhusu usimamizi, hubaki baada ya kufuta huko.",
-        },
-        {
-          title: "Haki zako",
-          body: "Unaweza kuona jina lako la mtumiaji kwenye ukurasa wa wasifu, kusoma na kuhariri andiko zako, kubadilisha jina la mtumiaji, na kufuta andiko, chapisho, au akaunti yote. Kufuta akaunti kunaondoa idhini hii. Pia unaweza kutumia Ripoti tatizo, ukiwa umeingia, kuomba kuona, kusahihisha, au kufuta data yako, au kuondoa idhini. Unaweza kulalamika kwa Ofisi ya Kamishna wa Ulinzi wa Data (ODPC).",
-        },
-        {
-          title: "Kujilinda",
-          body: "Tumia Toka haraka ukihitaji kuondoka kwenye tovuti hii upesi. Toka kwenye akaunti ukitumia simu inayoshirikiwa. Tumia barua pepe ambayo ni wewe tu unayeweza kuifungua.",
-        },
-        {
-          title: "Mawasiliano",
-          body: "Timu ya Nia inaendesha jukwaa hili. Tumia Ripoti tatizo kwenye tovuti hii kuwasiliana nao kuhusu data yako.",
-        },
-        {
-          title: "Toleo hili",
-          body: "Toleo la 1.0, Novemba 2026. Notisi hii ikibadilika, Nia itakuomba ukubali tena kabla ya kuandika kwenye NiaChat au kutumia Ripoti tatizo.",
+          title: "Usalama na usiri",
+          sections: [
+            {
+              heading: "1. Faragha kwanza",
+              paragraphs: [
+                "Andiko zako za faragha hazionyeshwi watu wengine kwenye tovuti hii. Nia haiwasiliani na polisi, hospitali, au shirika lingine kuhusu unachoandika, isipokuwa sheria inapohitaji. Wewe unaamua kama utapiga nambari ya msaada, kufuata njia ya rufaa, au kuweka andiko.",
+                "Tumia Toka haraka ukihitaji kuondoka kwenye tovuti hii upesi. Toka kwenye akaunti ukitumia simu inayoshirikiwa. Tumia barua pepe ambayo ni wewe tu unayeweza kuifungua.",
+              ],
+            },
+            {
+              heading: "2. Mipaka ya usiri",
+              paragraphs: [
+                "Nia haichunguzi unachoandika, na haifanyi ripoti kwa mamlaka kwa niaba yako. Sheria zingine nchini Kenya, ikiwemo Sheria ya Makosa ya Kingono na Sheria ya Watoto, zinahitaji watu fulani kuripoti mtoto anapokuwa hatarini mara moja. Nia ni kwa watu wazima wenye umri wa miaka 18 na zaidi. Usiandike taarifa inayomtambulisha mtoto.",
+                "Mtoto akiwa hatarini sasa, piga 999, 112, au nambari ya watoto 116.",
+              ],
+            },
+            {
+              heading: "3. Kujilinda",
+              paragraphs: [
+                "Usitume hadithi yako kwa SMS, au kwa gumzo ambalo watu wengine wanaweza kulifungua, kwa mtu usiyemwamini. Kuwa mwangalifu kwenye kifaa kinachoshirikiwa. Kwenye NiaChat, acha majina halisi, nambari za simu, na sehemu za kazi. Unaweza kufuta chapisho lako.",
+                "Waheshimu watu. Usinyanyase, usitishie, wala usimtaje mtu kwa jina. Usishiriki hadithi ya mtu mwingine isipokuwa amekubali.",
+              ],
+            },
+          ],
         },
       ],
       scrollHint: "Soma hadi mwisho, kisha unaweza kukubali.",

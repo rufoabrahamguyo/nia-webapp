@@ -19,6 +19,11 @@ function reachedEnd(node) {
   return node.scrollHeight <= node.clientHeight + 8 || node.scrollTop + node.clientHeight >= node.scrollHeight - 8;
 }
 
+function readyToAgree(node) {
+  const panels = [...node.querySelectorAll("details")];
+  return panels.length > 0 && panels.every((panel) => panel.open) && reachedEnd(node);
+}
+
 export default function ConsentDialog({ text, onClose, onSigned, onAgree }) {
   const copy = text.consent;
   const titleId = useId();
@@ -30,7 +35,7 @@ export default function ConsentDialog({ text, onClose, onSigned, onAgree }) {
 
   useEffect(() => {
     const node = docRef.current;
-    if (node && reachedEnd(node)) setRead(true);
+    if (node && readyToAgree(node)) setRead(true);
     const onKeyDown = (event) => {
       if (event.key === "Escape") onClose();
     };
@@ -69,15 +74,42 @@ export default function ConsentDialog({ text, onClose, onSigned, onAgree }) {
           ref={docRef}
           tabIndex={0}
           onScroll={(event) => {
-            if (reachedEnd(event.currentTarget)) setRead(true);
+            if (readyToAgree(event.currentTarget)) setRead(true);
           }}
         >
-          {copy.sections.map((section) => (
-            <section key={section.title}>
-              <h3>{section.title}</h3>
-              <p>{section.body}</p>
-            </section>
+          {copy.documents.map((document) => (
+            <details
+              key={document.title}
+              className="consent-policy"
+              open
+              onToggle={(event) => {
+                const node = event.currentTarget.parentElement;
+                if (node && readyToAgree(node)) setRead(true);
+              }}
+            >
+              <summary>
+                <span className="consent-policy-mark" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M12 3.2 22 20.5H2L12 3.2z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                    <path d="M12 9.2v5.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    <circle cx="12" cy="17.2" r="0.9" fill="currentColor" />
+                  </svg>
+                </span>
+                <span>{document.title}</span>
+              </summary>
+              <div className="consent-policy-body">
+                {document.sections.map((section) => (
+                  <section key={section.heading}>
+                    <h3>{section.heading}</h3>
+                    {section.paragraphs.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </details>
           ))}
+          <p className="consent-version">{copy.versionNote}</p>
         </div>
         <form onSubmit={accept}>
           {read ? null : <p className="fine">{copy.scrollHint}</p>}

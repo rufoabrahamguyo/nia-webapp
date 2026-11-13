@@ -1337,9 +1337,82 @@ h1 {
   background: var(--white);
 }
 
+.consent-dialog .consent-doc {
+  display: grid;
+  gap: 10px;
+  padding: 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.consent-policy {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+}
+
+.consent-policy summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.consent-policy summary::-webkit-details-marker {
+  display: none;
+}
+
+.consent-policy summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: rotate(45deg);
+}
+
+.consent-policy[open] summary::after {
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.consent-policy-mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  color: var(--ink);
+}
+
+.consent-policy-mark svg {
+  width: 18px;
+  height: 18px;
+}
+
+.consent-policy-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 16px 16px;
+}
+
 .consent-dialog .consent-doc h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1rem;
+}
+
+.consent-policy-body p {
+  margin: 6px 0 0;
+}
+
+.consent-version {
+  margin: 2px 4px 0;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .consent-agree {
